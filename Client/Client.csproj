@@ -1,0 +1,72 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazor.LocalStorage" Version="9.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.3" PrivateAssets="all" />
+    <PackageReference Include="MudBlazor" Version="9.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Pages\Student\Layout\" />
+    <Folder Include="Pages\Teacher\Layout\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Pages\Teacher\Pages\Grades.razor.cs">
+      <DependentUpon>Grades.razor</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Teacher\Pages\Courses.razor.cs">
+      <DependentUpon>Courses.razor</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Student\Pages\Courses.razor.cs">
+      <DependentUpon>Courses.razor</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Student\Pages\Profile.razor.cs">
+      <DependentUpon>Profile.razor</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Teacher\Pages\Profile.razor.cs">
+      <DependentUpon>Profile.razor</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Teacher\Pages\EditGrades.razor.cs">
+      <DependentUpon>EditGrades.razor</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Pages\Teacher\Pages\Grades.razor.css">
+      <DependentUpon>Grades.razor</DependentUpon>
+    </None>
+    <None Update="Pages\Teacher\Pages\Courses.razor.css">
+      <DependentUpon>Courses.razor</DependentUpon>
+    </None>
+    <None Update="Pages\Teacher\Pages\EditGrades.razor.css">
+      <DependentUpon>EditGrades.razor</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Pages\Student\Pages\Courses.razor.css">
+      <DependentUpon>Courses.razor</DependentUpon>
+    </Content>
+    <Content Update="Pages\Student\Pages\Profile.razor.css">
+      <DependentUpon>Profile.razor</DependentUpon>
+    </Content>
+    <Content Update="Pages\Teacher\Pages\Profile.razor.css">
+      <DependentUpon>Profile.razor</DependentUpon>
+    </Content>
+  </ItemGroup>
+
+</Project>

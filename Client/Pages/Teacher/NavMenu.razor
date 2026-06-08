@@ -1,0 +1,66 @@
+﻿@using Client.Token
+@using Microsoft.AspNetCore.Components.Authorization
+@using MudBlazor
+@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavManager
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">Client</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+<h1> TEACHER</h1>
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="nav flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="teacher" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="teacher/courses">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Courses
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="teacher/grades">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Grades
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="teacher/edit-rades">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Edit Grades
+            </NavLink>
+        </div>
+        
+        <div class="nav-item px-3">
+            <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="Logout">
+                Sign out
+            </MudButton>
+        </div>
+        
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+    private async Task Logout()
+    {
+        await LocalStorage.RemoveItemAsync("authToken");
+        ((CustomAuthStateProvider)AuthStateProvider).NotifyUserLogout();
+        NavManager.NavigateTo("/");
+        StateHasChanged();
+    }
+}

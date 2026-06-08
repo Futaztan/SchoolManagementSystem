@@ -1,0 +1,141 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+@using Shared.DTOs
+@using Shared.Entities
+@inject HttpClient Http
+@attribute [Authorize(Roles = "Admin")]
+@page "/admin/classes"
+@inject ISnackbar Snackbar
+
+
+
+<h3>Osztály hozzáadása</h3>
+
+<EditForm Model="classModel" OnValidSubmit="HandleAdd">
+	<div class="mb-3">
+		<label>név:</label>
+		<InputText @bind-Value="classModel.Name" class="form-control" />
+	</div>
+	<div class="mb-3">
+		<label>Year:</label>
+		<InputNumber @bind-Value="classModel.Year" class="form-control" />
+	</div>
+	<button type="submit" class="btn btn-primary">Hozzáadás</button>
+
+
+</EditForm>
+
+
+<h3>Osztályok</h3>
+
+
+<MudTable Items="@classes" MultiSelection="true" Dense="true" SortLabel="Sort by" Filter="new Func<SchoolClassDto, bool>(FilterFunc)" @bind-SelectedItems="selectedClasses" Hover="true" Breakpoint="Breakpoint.Sm">
+
+	<ToolBarContent>
+		<MudText Typo="Typo.h6">Osztályok</MudText>
+		<MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+		<MudSpacer /> @* Ez eltolja a gombot a jobb szélre *@
+
+
+		@if (selectedClasses.Any())
+		{
+			<MudButton Variant="Variant.Filled"
+					   Color="Color.Error"
+					   StartIcon="@Icons.Material.Filled.Delete"
+					   OnClick="OnDeleteSelected"
+					   Class="ml-4">
+				Törlés (@selectedClasses.Count)
+			</MudButton>
+		}
+	</ToolBarContent>
+
+	<HeaderContent>
+		<MudTh><MudTableSortLabel SortBy="new Func<SchoolClassDto, object>(x => x.Id)"> ID</MudTableSortLabel></MudTh>
+		<MudTh><MudTableSortLabel SortBy="new Func<SchoolClassDto, object>(x => x.Name)"> Név</MudTableSortLabel></MudTh>
+		<MudTh><MudTableSortLabel SortBy="new Func<SchoolClassDto, object>(x => x.Year)"> Év</MudTableSortLabel></MudTh>
+	</HeaderContent>
+	<RowTemplate>
+		<MudTd DataLabel="Id">@context.Id</MudTd>
+		<MudTd DataLabel="Név">@context.Name</MudTd>
+		<MudTd DataLabel="Év">@context.Year</MudTd>
+	</RowTemplate>
+
+	<PagerContent>
+		<MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100, int.MaxValue }"
+					   RowsPerPageString="Sorok száma oldalanként"
+					   InfoFormat="{first_item}-{last_item} elem a {all_items}-ból"
+					   AllItemsText="Összes"
+					   HorizontalAlignment="HorizontalAlignment.Right" />
+	</PagerContent>
+
+</MudTable>
+
+
+@code {
+
+
+	private SchoolClassDto classModel = new SchoolClassDto();
+	private int selectedClassID;
+
+	private async Task HandleAdd()
+	{
+		{
+			var response = await Http.PostAsJsonAsync("api/classes", classModel);
+			if (response.IsSuccessStatusCode)
+			{
+				SchoolClassDto newSchoolClass = await response.Content.ReadFromJsonAsync<SchoolClassDto>();
+				if (newSchoolClass != null)
+				{
+					classes.Add(newSchoolClass);
+					Snackbar.Add($"Sikeres hozzáadás", Severity.Success);
+				}
+			}
+
+		}
+	}
+
+
+
+	private HashSet<SchoolClassDto> selectedClasses = new HashSet<SchoolClassDto>();
+	private List<SchoolClassDto> classes = null;
+	private string searchString = "";
+	protected override async Task OnInitializedAsync()
+	{
+
+
+		var response = await Http.GetFromJsonAsync<List<SchoolClassDto>>("api/classes");
+		if (response != null) classes = response;
+
+	}
+	private async Task OnDeleteSelected()
+	{
+		Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+		var idsToDelete = selectedClasses.Select(s => s.Id).ToList();
+		if (!idsToDelete.Any()) return;
+		var response = await Http.PostAsJsonAsync("api/classes/bulk-delete", idsToDelete);
+
+		if (response.IsSuccessStatusCode)
+		{
+			classes.RemoveAll(s => idsToDelete.Contains(s.Id));
+			selectedClasses.Clear();
+			Snackbar.Add($"{idsToDelete.Count} tárgy törölve.", Severity.Success);
+			StateHasChanged();
+		}
+		else Snackbar.Add($"Sikertelen", Severity.Error);
+
+	}
+	private bool FilterFunc(SchoolClassDto schoolClass)
+	{
+		if (string.IsNullOrWhiteSpace(searchString))
+			return true;
+		if (schoolClass.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+			return true;
+		if (schoolClass.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+			return true;
+		if (schoolClass.Year.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+			return true;
+
+		return false;
+	}
+
+}

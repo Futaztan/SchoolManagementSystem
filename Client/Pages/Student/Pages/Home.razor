@@ -1,0 +1,77 @@
+﻿@page "/student"
+@using System.Globalization
+@using System.Net
+@using Client.Pages.Components
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using MudBlazor
+@using Shared.DTOs
+@attribute [Authorize(Roles = "Student")]
+@inject HttpClient Http
+
+
+<AuthorizeView>
+	<Authorized>
+		<PageTitle>Home</PageTitle>
+		<MudText Typo="Typo.h5" Class="mb-4">Hello, @context.User.Identity?.Name!</MudText>
+	</Authorized>
+</AuthorizeView>
+
+@if (gradeList == null)
+{
+	<LoadingCircle/>
+}
+else if (gradeList.Count == 0)
+{
+	<MudText Typo="Typo.h6" Color="Color.Secondary" Class="mt-4">Nincsenek feljegyzések</MudText>
+}
+else
+{
+	<MudText Typo="Typo.h6" Class="mt-4 mb-2">Legutolsó feljegyzések:</MudText>
+
+	<MudTable Items="gradeList"
+	          Hover="true"
+	          Bordered="false"
+	          Striped="true"
+	          Dense="true"
+	          Elevation="1"
+	          Outlined="true"
+	          Class="mb-12"
+	          Style="max-width: 600px; width: 100%;">
+		<HeaderContent>
+			<MudTh>
+				<MudTableSortLabel SortBy="new Func<dynamic, object>(x => x.CourseName)">Subject</MudTableSortLabel>
+			</MudTh>
+			<MudTh>Date</MudTh>
+			<MudTh>Grade</MudTh>
+		</HeaderContent>
+		<RowTemplate>
+			<MudTd DataLabel="Subject" Style="font-weight: 500;">@context.CourseName</MudTd>
+			<MudTd DataLabel="Date" Class="text-muted">@context.Date</MudTd>
+			<MudTd DataLabel="Grade">
+				<MudChip T="string" Color="Color.Primary" Size="Size.Small" Variant="Variant.Text"
+				         Style="font-weight: bold;">
+					@context.Value
+				</MudChip>
+			</MudTd>
+		</RowTemplate>
+	</MudTable>
+}
+
+@code{
+
+	private StudentDto? student;
+	private List<GradeDto>? gradeList = null;
+
+	protected override async Task OnInitializedAsync()
+	{
+		var response = await Http.GetFromJsonAsync<List<StudentDto>>("api/grades");
+		if (response != null)
+		{
+			student = response[0];
+			gradeList = student.Grades.OrderByDescending(g => g.Date).ToList();
+			gradeList = gradeList.Take(5).ToList();
+		}
+	}
+
+}

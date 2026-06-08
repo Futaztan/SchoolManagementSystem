@@ -1,0 +1,9 @@
+﻿.custom-timetable th, .custom-timetable td {
+    border: 1px solid green !important;
+}
+
+.empty-slot {
+    color: darkgrey;
+    font-style: italic;
+    font-size: 0.9rem;
+}

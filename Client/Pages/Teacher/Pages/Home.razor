@@ -1,0 +1,17 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@page "/teacher"
+@attribute [Authorize(Roles = "Teacher")]
+<AuthorizeView>
+
+
+	<h3>TeacherHome</h3>
+
+	<p>Szia @context.User.Identity.Name</p>
+	
+
+</AuthorizeView>
+
+@code {
+	
+}

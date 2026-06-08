@@ -1,0 +1,194 @@
+﻿@page "/teacher/edit-grades"
+@using Client.Pages.Components
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using MudBlazor
+@using Shared.DTOs
+@inject AuthenticationStateProvider AuthStateProvider
+@attribute [Authorize(Roles = "Teacher")]
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+
+<MudText Typo="Typo.h4" Class="mb-6 font-weight-bold" Color="Color.Primary">Jegyek szerkesztése</MudText>
+
+@if (schoolClasses is null)
+{
+    <LoadingCircle/>
+}
+else if (schoolClasses.Count == 0)
+{
+    <MudAlert Severity="Severity.Info" Variant="Variant.Filled" Class="mt-4">
+        Nincs elérhető osztály!
+    </MudAlert>
+}
+else
+{
+    <MudCard Elevation="4" Class="mb-8 pa-6 rounded-lg">
+        <EditForm Model="@selectionModel" OnValidSubmit="GetStudentGrades">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+
+            <MudGrid Class="align-end">
+                <MudItem xs="12" sm="6" md="3">
+                    <MudSelect T="int?"
+                               Label="1. Osztály kiválasztása"
+                               @bind-Value="selectionModel.SelectedClassId"
+                               Placeholder="-- Válassz egyet --"
+                               Variant="Variant.Outlined"
+                               Margin="Margin.Dense"
+                               AdornmentIcon="@Icons.Material.Filled.Class"
+                               AdornmentColor="Color.Primary">
+                        <MudSelectItem T="int?" Value="null">-- Válassz egyet --</MudSelectItem>
+                        @foreach (var cat in schoolClasses)
+                        {
+                            <MudSelectItem T="int?" Value="@cat.Id">@cat.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="3">
+                    <MudSelect T="int?"
+                               Label="2. Tantárgy kiválasztása"
+                               @bind-Value="selectionModel.SelectedCourseId"
+                               Disabled="@(selectionModel.SelectedClassId is null)"
+                               Variant="Variant.Outlined"
+                               Margin="Margin.Dense"
+                               AdornmentIcon="@Icons.Material.Filled.Book"
+                               AdornmentColor="Color.Primary">
+                        @if (selectionModel.SelectedClassId is null)
+                        {
+                            <MudSelectItem T="int?" Value="null">-</MudSelectItem>
+                        }
+                        else
+                        {
+                            <MudSelectItem T="int?" Value="null">-- Válassz egyet --</MudSelectItem>
+                            @if (schoolClasses.Any(c => c.Id == selectionModel.SelectedClassId))
+                            {
+                                var selectedClass = schoolClasses.Single(c => c.Id == selectionModel.SelectedClassId);
+                                @foreach (var course in selectedClass.Courses)
+                                {
+                                    <MudSelectItem T="int?" Value="@course.Id">@course.Subject.Name</MudSelectItem>
+                                }
+                            }
+                        }
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="3">
+                    <MudSelect T="int?"
+                               Label="3. Diák kiválasztása"
+                               @bind-Value="selectionModel.SelectedStudentId"
+                               Disabled="@(selectionModel.SelectedClassId is null)"
+                               Variant="Variant.Outlined"
+                               Margin="Margin.Dense"
+                               AdornmentIcon="@Icons.Material.Filled.Person"
+                               AdornmentColor="Color.Primary">
+                        @if (selectionModel.SelectedClassId is null)
+                        {
+                            <MudSelectItem T="int?" Value="null">-</MudSelectItem>
+                        }
+                        else
+                        {
+                            <MudSelectItem T="int?" Value="null">-- Válassz egyet --</MudSelectItem>
+                            var selectedClass = schoolClasses.SingleOrDefault(c => c.Id == selectionModel.SelectedClassId);
+                            if (selectedClass != null)
+                            {
+                                @foreach (var student in selectedClass.Students)
+                                {
+                                    <MudSelectItem T="int?" Value="@student.Id">@student.Name</MudSelectItem>
+                                }
+                            }
+                        }
+                    </MudSelect>
+                </MudItem>
+
+                <MudItem xs="12" sm="6" md="3">
+                    <MudButton ButtonType="ButtonType.Submit"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Disabled="@(selectionModel.SelectedCourseId is null)"
+                               FullWidth="true"
+                               Size="Size.Large"
+                               StartIcon="@Icons.Material.Filled.Search"
+                               Class="py-2">
+                        Betöltés
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </MudCard>
+}
+
+@if (student is not null)
+{
+    <MudCard Elevation="4" Class="pa-6 mt-6 rounded-lg">
+        <div class="d-flex align-center mb-4">
+            <MudIcon Icon="@Icons.Material.Filled.Assignment" Color="Color.Primary" Class="mr-2" Size="Size.Large"/>
+            <MudText Typo="Typo.h5" Color="Color.Primary" Class="font-weight-bold">Adatok kezelése</MudText>
+        </div>
+
+        <MudTable Items="@gradesListModel" T="GradesListModel" Dense="false" Hover="true" Striped="true"
+                  Class="elevation-0">
+            <HeaderContent>
+                <MudTh>
+                    <MudTableSortLabel SortBy="new Func<GradesListModel, object>(x=>x.Subject)">Tantárgy
+                    </MudTableSortLabel>
+                </MudTh>
+                <MudTh Style="width: 180px;">Dátum</MudTh>
+                <MudTh Style="width: 180px;">Jegy</MudTh>
+                <MudTh Style="width: 80px;" Class="text-center">Törlés</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Tantárgy">@context.Subject</MudTd>
+                <MudTd DataLabel="Dátum">@context.Date</MudTd>
+                <MudTd DataLabel="Jegy">
+                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Text" Size="Size.Small"
+                             Class="font-weight-bold">
+                        @context.Grade
+                    </MudChip>
+                </MudTd>
+                <MudTd Class="text-center">
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                   Color="Color.Error"
+                                   Size="Size.Medium"
+                                   OnClick="@(() => RemoveItem(context))"
+                                   Title="Törlés"/>
+                </MudTd>
+            </RowTemplate>
+            <RowEditingTemplate>
+                <MudTd DataLabel="Tantárgy">
+                    <MudText>@context.Subject</MudText>
+                </MudTd>
+                <MudTd DataLabel="Dátum">
+                    <MudText>@context.Date</MudText>
+                </MudTd>
+                <MudTd DataLabel="Jegy">
+                    <MudNumericField @bind-Value="@context.Grade"
+                                     Required="true"
+                                     Min="1"
+                                     Max="5"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"/>
+                </MudTd>
+                <MudTd></MudTd>
+            </RowEditingTemplate>
+        </MudTable>
+
+        <div class="d-flex justify-end gap-3 mt-6">
+            <MudButton Variant="Variant.Outlined"
+                       Color="Color.Secondary"
+                       Size="Size.Large"
+                       StartIcon="@Icons.Material.Filled.Cancel"
+                       OnClick="@(() => CancelChanges())">
+                Mégse
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Success"
+                       Size="Size.Large"
+                       StartIcon="@Icons.Material.Filled.Save"
+                       OnClick="@(() => SubmitChanges())">
+                Mentés
+            </MudButton>
+        </div>
+    </MudCard>
+}

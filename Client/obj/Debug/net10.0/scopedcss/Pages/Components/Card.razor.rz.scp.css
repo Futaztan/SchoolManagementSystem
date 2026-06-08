@@ -1,0 +1,28 @@
+.my-custom-card[b-e8f3v6h9cq] {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    width: 300px;
+    margin: 15px;
+    overflow: hidden;
+    font-family: sans-serif;
+    background-color: #fff;
+}
+.card-image[b-e8f3v6h9cq] {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+.card-body[b-e8f3v6h9cq] {
+    padding: 16px;
+}
+.card-title[b-e8f3v6h9cq] {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: #333;
+}
+.card-content[b-e8f3v6h9cq] {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}

@@ -1,0 +1,16 @@
+﻿.timetable-table th{
+    font-weight: bold !important;
+    text-align: center !important;
+}
+
+.timetable-table th:first-child {
+    width: 80px !important;
+    background-color: gray !important;
+    text-align: left !important; /* Mivel a többi középre van zárva, ezt érdemes visszaállítani balra */
+}
+.timetable-table td:first-child{
+    font-weight: bold; background-color: grey;
+}
+.timetable-table td{
+    text-align: center; width: 18%; height: 70px; vertical-align: middle;
+}

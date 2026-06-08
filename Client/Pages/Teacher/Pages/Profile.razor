@@ -1,0 +1,188 @@
+﻿@page "/teacher/profile"
+@using Client.Pages.Components
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+
+@using Shared.DTOs
+@attribute [Authorize(Roles = "Teacher")]
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+<h3>Profile</h3>
+
+@if (teacher == null)
+{
+    <LoadingCircle/>
+}
+else
+{
+    <MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudCard Elevation="3" Class="pa-4" Style="height: 100%;">
+                    <MudCardHeader>
+                     
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5">@teacher.Name</MudText>
+                           
+                        </CardHeaderContent>
+                    </MudCardHeader>
+
+                    <MudCardContent>
+                        <MudList T="string">
+                            <MudListItem Icon="@Icons.Material.Filled.Email" Text="@($"Email: {teacher.Email}")"/>
+                            <MudListItem Icon="@Icons.Material.Filled.Cake"
+                                         Text="@($"Születési dátum: {teacher.BirthDate?.ToString("yyyy. MM. dd.") ?? "Nincs megadva"}")"/>
+                            <MudListItem Icon="@Icons.Material.Filled.Book"
+                                         Text="@($"Teached subjects: {string.Join(", ", teacher.TeachedSubjects.Select(t => t.Name))}")"/>
+                        </MudList>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12" md="6">
+                <MudCard Elevation="3" Class="pa-4" Style="height: 100%;">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Jelszó megváltoztatása</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+
+                    <MudCardContent>
+                        <EditForm Model="@passwordModel" OnValidSubmit="HandlePasswordChange">
+                            <DataAnnotationsValidator/>
+
+                            <MudTextField T="string"
+                                          Label="Jelenlegi jelszó"
+                                          @bind-Value="passwordModel.CurrentPassword"
+                                          For="@(() => passwordModel.CurrentPassword)"
+                                          InputType="@currentPasswordInput"
+                                          Adornment="Adornment.End"
+                                          AdornmentIcon="@currentPasswordIcon"
+                                          OnAdornmentClick="ToggleCurrentPasswordVisibility"
+                                          Variant="Variant.Outlined"
+                                          Class="mb-4"/>
+
+                            <MudTextField T="string"
+                                          Label="Új jelszó"
+                                          @bind-Value="passwordModel.NewPassword"
+                                          For="@(() => passwordModel.NewPassword)"
+                                          InputType="@newPasswordInput"
+                                          Adornment="Adornment.End"
+                                          AdornmentIcon="@newPasswordIcon"
+                                          OnAdornmentClick="ToggleNewPasswordVisibility"
+                                          Variant="Variant.Outlined"
+                                          Class="mb-4"/>
+
+                            <MudTextField T="string"
+                                          Label="Új jelszó megerősítése"
+                                          @bind-Value="passwordModel.ConfirmPassword"
+                                          For="@(() => passwordModel.ConfirmPassword)"
+                                          InputType="@newPasswordInput"
+                                          Variant="Variant.Outlined"
+                                          Class="mb-6"/>
+
+                            <div class="d-flex justify-end">
+                                <MudButton ButtonType="ButtonType.Submit"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           Disabled="@isSubmitting">
+                                    @if (isSubmitting)
+                                    {
+                                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                                        <MudText Class="ms-2">Mentés...</MudText>
+                                    }
+                                    else
+                                    {
+                                        <MudText>Mentés</MudText>
+                                    }
+                                </MudButton>
+                            </div>
+                        </EditForm>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+}
+
+@code {
+
+    private TeacherDetailsDto? teacher;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await Http.GetFromJsonAsync<List<TeacherDetailsDto>>("api/teachers");
+        if (response != null)
+        {
+            teacher = response[0];
+        }
+    }
+
+
+    private PasswordChangeModel passwordModel = new();
+    private bool isSubmitting = false;
+    
+    private InputType currentPasswordInput = InputType.Password;
+    private string currentPasswordIcon = Icons.Material.Filled.VisibilityOff;
+    private InputType newPasswordInput = InputType.Password;
+    private string newPasswordIcon = Icons.Material.Filled.VisibilityOff;
+
+    private async Task HandlePasswordChange()
+    {
+        isSubmitting = true;
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/teachers/change-password", passwordModel);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("The password has been changed!", Severity.Success);
+                passwordModel = new(); 
+            }
+            else
+            {
+                Snackbar.Add("There was an error.", Severity.Error);
+            }
+        }
+        catch (Exception)
+        {
+            Snackbar.Add("Network error.", Severity.Error);
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private void ToggleCurrentPasswordVisibility()
+    {
+        if (currentPasswordInput == InputType.Password)
+        {
+            currentPasswordInput = InputType.Text;
+            currentPasswordIcon = Icons.Material.Filled.Visibility;
+        }
+        else
+        {
+            currentPasswordInput = InputType.Password;
+            currentPasswordIcon = Icons.Material.Filled.VisibilityOff;
+        }
+    }
+
+    private void ToggleNewPasswordVisibility()
+    {
+        if (newPasswordInput == InputType.Password)
+        {
+            newPasswordInput = InputType.Text;
+            newPasswordIcon = Icons.Material.Filled.Visibility;
+        }
+        else
+        {
+            newPasswordInput = InputType.Password;
+            newPasswordIcon = Icons.Material.Filled.VisibilityOff;
+        }
+    }
+    
+
+}

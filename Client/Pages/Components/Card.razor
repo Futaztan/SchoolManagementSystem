@@ -1,0 +1,42 @@
+﻿@using Shared.DTOs 
+@using Shared.Entities
+@* Ha DTO-kat használsz *@
+
+<MudPaper Elevation="1" 
+          Outlined="true" 
+          Class="d-flex flex-column justify-center align-center mud-width-full h-100 pa-2 timetable-card">
+    
+    <MudText Typo="Typo.caption" Color="Color.Secondary" Class="font-weight-bold mb-1">
+        @($"{CourseSchedule.LessonNumber + 7}:00 - {CourseSchedule.LessonNumber + 7}:45")
+    </MudText>
+
+    <MudText Typo="Typo.body2" Class="font-weight-bold text-center chat-subject-text">
+        @Course.Subject.Name
+    </MudText>
+
+    <MudText Typo="Typo.caption" Class="mt-1 mud-text-secondary font-weight-medium">
+        @Course.SchoolClassName
+    </MudText>
+
+</MudPaper>
+
+<style>
+    /* Biztosítjuk, hogy a kártya felvegye a szülő cella teljes magasságát és szélességét */
+    .timetable-card {
+        background-color: #f4f6f9 !important; /* Finom, tiszta háttérszín az óráknak */
+        border-color: mediumpurple !important;
+        border-left: 4px solid black   !important; /* Egy szép kék csík a bal szélén */
+        border-radius: 4px;
+        min-height: 60px;
+    }
+    
+    .chat-subject-text {
+        color: #2c3e50;
+        line-height: 1.2;
+    }
+</style>
+
+@code {
+    [Parameter] public CourseDto Course { get; set; } = default!;
+    [Parameter] public CourseScheduleDto CourseSchedule { get; set; } = default!;
+}

@@ -1,0 +1,86 @@
+﻿@page "/"
+@using Client.Token
+@using Microsoft.AspNetCore.Components.Authorization
+@using Shared.DTOs
+@inject HttpClient Http
+@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavManager
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 75vh;">
+    <div class="card shadow-sm border-0" style="max-width: 400px; width: 100%; border-radius: 12px;">
+        <div class="card-body p-4 p-sm-5">
+
+            <h3 class="card-title text-center fw-bold mb-4 text-primary">Bejelentkezés</h3>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger d-flex align-items-center small p-2 mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <div>@errorMessage</div>
+                </div>
+            }
+
+            <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+                <DataAnnotationsValidator/>
+
+                <div class="form-floating mb-3">
+                    <InputText @bind-Value="loginModel.Name" id="loginName" class="form-control"
+                               placeholder="Felhasználónév"/>
+                    <label for="loginName" class="text-muted">Felhasználónév</label>
+                    <ValidationMessage For="@(() => loginModel.Name)" class="text-danger small mt-1"/>
+                </div>
+
+                <div class="form-floating mb-4">
+                    <InputText @bind-Value="loginModel.Password" id="loginPassword" type="password" class="form-control"
+                               placeholder="Jelszó"/>
+                    <label for="loginPassword" class="text-muted">Jelszó</label>
+                    <ValidationMessage For="@(() => loginModel.Password)" class="text-danger small mt-1"/>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm"
+                        style="border-radius: 8px;">
+                    Belépés
+                </button>
+            </EditForm>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    private LoginDto loginModel = new LoginDto { Name = "empty", Password = "empty" };
+    private string errorMessage;
+
+    private async Task HandleLogin()
+    {
+        var response = await Http.PostAsJsonAsync("api/auth/login", loginModel);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+            await LocalStorage.SetItemAsync("authToken", result.Token);
+            ((CustomAuthStateProvider)AuthStateProvider).NotifyUserAuthentication(result.Token);
+
+            if (result.Role == "Admin")
+                NavManager.NavigateTo("/admin", forceLoad: true);
+            else if (result.Role == "Student")
+                NavManager.NavigateTo("/student", forceLoad: true);
+            else if (result.Role == "Teacher")
+                NavManager.NavigateTo("/teacher", forceLoad: true);
+            else NavManager.NavigateTo("/", forceLoad: true);
+            StateHasChanged();
+        }
+        else
+        {
+            errorMessage = "Hibás felhasználónév vagy jelszó!";
+        }
+    }
+
+    public class LoginResponse
+    {
+        public string Token { get; set; }
+        public string Role { get; set; }
+    }
+
+}
