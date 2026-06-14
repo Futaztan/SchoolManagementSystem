@@ -1,0 +1,75 @@
+﻿@using MudBlazor
+@using Shared.DTOs
+<MudCard Elevation="2" Class="mb-6 pa-4 bg-light">
+	<EditForm Model="@SelectionModel" OnValidSubmit="HandleSubmit">
+		<DataAnnotationsValidator/>
+		<ValidationSummary/>
+
+		<MudGrid Alignment="GridAlignment.Center">
+			<MudItem xs="12" sm="5">
+				<MudSelect T="int?"
+				           Label="1. Select Type (Class)"
+				           @bind-Value="SelectionModel.SelectedClassId"
+				           Placeholder="-- Please select --"
+				           Variant="Variant.Outlined"
+				           Margin="Margin.Dense">
+					<MudSelectItem T="int?" Value="null">-- Please select --</MudSelectItem>
+					@foreach (var cat in SchoolClasses)
+					{
+						<MudSelectItem T="int?" Value="@cat.Id">@cat.Name</MudSelectItem>
+					}
+				</MudSelect>
+			</MudItem>
+
+			<MudItem xs="12" sm="5">
+				<MudSelect T="int?"
+				           Label="2. Select Subject"
+				           @bind-Value="SelectionModel.SelectedCourseId"
+				           Disabled="@(SelectionModel.SelectedClassId is null)"
+				           Variant="Variant.Outlined"
+				           Margin="Margin.Dense">
+					@if (SelectionModel.SelectedClassId is null)
+					{
+						<MudSelectItem T="int?" Value="null">-</MudSelectItem>
+					}
+					else
+					{
+						<MudSelectItem T="int?" Value="null">-- Please select --</MudSelectItem>
+						@if (SchoolClasses.Any(c => c.Id == SelectionModel.SelectedClassId))
+						{
+							var selectedClass = SchoolClasses.Single(c => c.Id == SelectionModel.SelectedClassId);
+							@foreach (var course in selectedClass.Courses)
+							{
+								<MudSelectItem T="int?" Value="@course.Id">@course.Subject.Name</MudSelectItem>
+							}
+						}
+					}
+				</MudSelect>
+			</MudItem>
+
+			<MudItem xs="12" sm="2" Class="d-flex align-center justify-sm-end pt-5">
+				<MudButton ButtonType="ButtonType.Submit"
+				           Variant="Variant.Filled"
+				           Color="Color.Primary"
+				           Disabled="@(SelectionModel.SelectedCourseId is null)"
+				           FullWidth="true"
+				           StartIcon="@Icons.Material.Filled.Search">
+					Load
+				</MudButton>
+			</MudItem>
+		</MudGrid>
+	</EditForm>
+</MudCard>
+
+@code {
+	[Parameter] public required Grades.SelectionModel SelectionModel { get; set; }
+	[Parameter] public required List<SchoolClassDto> SchoolClasses { get; set; }
+
+	[Parameter] public required EventCallback<Grades.SelectionModel> OnSubmit { get; set; }
+
+	private async Task HandleSubmit()
+	{
+		await OnSubmit.InvokeAsync(SelectionModel);
+	}
+
+}

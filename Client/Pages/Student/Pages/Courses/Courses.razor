@@ -1,0 +1,36 @@
+﻿@page "/student/courses"
+@using Client.Pages.Components
+
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+@using Shared.DTOs
+@using Shared.Entities
+@inject HttpClient Http
+@attribute [Authorize(Roles = "Student")]
+
+<MudText Typo="Typo.h5" Class="mt-8 mb-3 font-weight-bold d-flex align-center">
+    <MudIcon Icon="@Icons.Material.Filled.CalendarMonth" Class="mr-2" Color="Color.Success"/>
+    Timetable
+</MudText>
+
+@if (courses == null)
+{
+    <LoadingCircle/>
+}
+else
+{
+    <TimeTable Courses="courses"/>
+}
+
+@code {
+
+    private List<CourseDto>? courses;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await Http.GetFromJsonAsync<List<CourseDto>>("api/courses");
+        if (response != null) courses = response;
+    }
+
+}

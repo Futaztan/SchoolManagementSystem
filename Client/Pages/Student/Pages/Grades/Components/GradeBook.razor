@@ -1,0 +1,48 @@
+﻿@using Client.Constants
+@using Client.Extensions
+@using MudBlazor
+@using Shared.DTOs
+<MudTable Items="CourseDictionary" Hover="true" Bordered="true" Dense="true" Elevation="1"
+          Class="mb-12 custom-timetable">
+    <HeaderContent>
+        <MudTh>Subject</MudTh>
+        @foreach (var month in AppConstants.Months)
+        {
+            <MudTh>@AppConstants.GetMonthName(month)</MudTh>
+        }
+        <MudTh>Average</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd Style="font-weight: bold; background-color: grey;">@context.Key</MudTd>
+
+        @foreach (var month in AppConstants.Months)
+        {
+            <MudTd Style="text-align: center; vertical-align: middle;">
+                @{
+                    var gradesList = Student.GetMonthlyDataByCourse(month, context.Key);
+                }
+                @if (gradesList.Count == 0)
+                {
+                    <span style="color: #bdbdbd;">-</span>
+                }
+                else
+                {
+                    <div class="d-flex flex-wrap gap-1 justify-center">
+                        @foreach (var grade in gradesList)
+                        {
+                            <span class="custom-grade-badge">@grade.Value</span>
+                        }
+                    </div>
+                }
+            </MudTd>
+        }
+        <MudTd>@Student.GetGradeAverageByCourse(context.Key)</MudTd>
+
+
+    </RowTemplate>
+</MudTable>
+
+@code {
+    [Parameter] public required Dictionary<string, List<int>> CourseDictionary { get; set; }
+    [Parameter] public required StudentDto Student { get; set; }
+}

@@ -43,19 +43,19 @@ namespace Server.Controllers
             return list;
         }
 
-        [Authorize(Roles = "Student")]
-        [HttpPost("change-password")]
-        public async Task<IActionResult> ChangePassword(PasswordChangeModel pass)
-        {
-            
-            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var user = await _userManager.FindByIdAsync(userid);
-            var result = await _userManager.ChangePasswordAsync(user!, pass.CurrentPassword, pass.NewPassword);
-            if (result.Succeeded) return Ok();
-            var errors = result.Errors.Select(e => e.Description);
-            return BadRequest(new { Errors = errors });
-            
-        }
+        // [Authorize(Roles = "Student")]
+        // [HttpPost("change-password")]
+        // public async Task<IActionResult> ChangePassword(PasswordChangeModel pass)
+        // {
+        //     
+        //     string userid = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        //     var user = await _userManager.FindByIdAsync(userid);
+        //     var result = await _userManager.ChangePasswordAsync(user!, pass.CurrentPassword, pass.NewPassword);
+        //     if (result.Succeeded) return Ok();
+        //     var errors = result.Errors.Select(e => e.Description);
+        //     return BadRequest(new { Errors = errors });
+        //     
+        // }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]

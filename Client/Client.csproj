@@ -25,23 +25,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Pages\Teacher\Pages\Grades.razor.cs">
+    <Compile Update="Pages\Teacher\Pages\Courses\Components\NewCourseForm.razor.cs">
+      <DependentUpon>NewCourseForm.razor</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Teacher\Pages\Courses\Courses.razor.cs">
+      <DependentUpon>Courses.razor</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Teacher\Pages\Grades\Grades.razor.cs">
       <DependentUpon>Grades.razor</DependentUpon>
     </Compile>
-    <Compile Update="Pages\Teacher\Pages\Courses.razor.cs">
-      <DependentUpon>Courses.razor</DependentUpon>
-    </Compile>
-    <Compile Update="Pages\Student\Pages\Courses.razor.cs">
-      <DependentUpon>Courses.razor</DependentUpon>
-    </Compile>
-    <Compile Update="Pages\Student\Pages\Profile.razor.cs">
-      <DependentUpon>Profile.razor</DependentUpon>
-    </Compile>
-    <Compile Update="Pages\Teacher\Pages\Profile.razor.cs">
-      <DependentUpon>Profile.razor</DependentUpon>
-    </Compile>
-    <Compile Update="Pages\Teacher\Pages\EditGrades.razor.cs">
-      <DependentUpon>EditGrades.razor</DependentUpon>
+    <Compile Update="Pages\Components\ChangePasswordForm.razor.cs">
+      <DependentUpon>ChangePasswordForm.razor</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -55,17 +49,29 @@
     <None Update="Pages\Teacher\Pages\EditGrades.razor.css">
       <DependentUpon>EditGrades.razor</DependentUpon>
     </None>
+    <None Update="Pages\Teacher\Pages\Courses\Components\NewCourseForm.razor.css">
+      <DependentUpon>NewCourseForm.razor</DependentUpon>
+    </None>
+    <None Update="Pages\Teacher\Pages\Grades\Components\GradeBook.razor.css">
+      <DependentUpon>GradeBook.razor</DependentUpon>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Pages\Student\Pages\Courses.razor.css">
+    <Content Update="Pages\Teacher\Pages\Courses\Courses.razor.css">
       <DependentUpon>Courses.razor</DependentUpon>
     </Content>
-    <Content Update="Pages\Student\Pages\Profile.razor.css">
-      <DependentUpon>Profile.razor</DependentUpon>
+    <Content Update="Pages\Student\Pages\Courses\Courses.razor.css">
+      <DependentUpon>Courses.razor</DependentUpon>
     </Content>
-    <Content Update="Pages\Teacher\Pages\Profile.razor.css">
-      <DependentUpon>Profile.razor</DependentUpon>
+    <Content Update="Pages\Components\Card.razor.css">
+      <DependentUpon>Card.razor</DependentUpon>
+    </Content>
+    <Content Update="Pages\Student\NavMenu.razor.css">
+      <DependentUpon>NavMenu.razor</DependentUpon>
+    </Content>
+    <Content Update="Pages\Teacher\NavMenu.razor.css">
+      <DependentUpon>NavMenu.razor</DependentUpon>
     </Content>
   </ItemGroup>
 

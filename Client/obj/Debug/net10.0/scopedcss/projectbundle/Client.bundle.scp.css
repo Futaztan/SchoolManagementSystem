@@ -357,24 +357,23 @@ main[b-tmopy668it] {
         overflow-y: auto;
     }
 }
-/* /Pages/Student/Pages/Courses.razor.rz.scp.css */
-.timetable-table th[b-ea6iqh7y76]{
+/* /Pages/Student/Pages/Courses/Courses.razor.rz.scp.css */
+.timetable-table th[b-9enlvdac17]{
     font-weight: bold !important;
     text-align: center !important;
 }
 
-.timetable-table th:first-child[b-ea6iqh7y76] {
+.timetable-table th:first-child[b-9enlvdac17] {
     width: 80px !important;
     background-color: gray !important;
     text-align: left !important; /* Mivel a többi középre van zárva, ezt érdemes visszaállítani balra */
 }
-.timetable-table td:first-child[b-ea6iqh7y76]{
+.timetable-table td:first-child[b-9enlvdac17]{
     font-weight: bold; background-color: grey;
 }
-.timetable-table td[b-ea6iqh7y76]{
+.timetable-table td[b-9enlvdac17]{
     text-align: center; width: 18%; height: 70px; vertical-align: middle;
 }
-/* /Pages/Student/Pages/Profile.razor.rz.scp.css */
 /* /Pages/Teacher/NavMenu.razor.rz.scp.css */
 .navbar-toggler[b-cw2yn0qoxq] {
     background-color: rgba(255, 255, 255, 0.1);
@@ -459,19 +458,20 @@ main[b-tmopy668it] {
         overflow-y: auto;
     }
 }
-/* /Pages/Teacher/Pages/Courses.razor.rz.scp.css */
-.custom-timetable th[b-3d3lwglvi8], .custom-timetable td[b-3d3lwglvi8] {
+/* /Pages/Teacher/Pages/Courses/Components/NewCourseForm.razor.rz.scp.css */
+/* /Pages/Teacher/Pages/Courses/Courses.razor.rz.scp.css */
+.custom-timetable th[b-w3n0ti2oby], .custom-timetable td[b-w3n0ti2oby] {
     border: 1px solid green !important;
 }
 
-.empty-slot[b-3d3lwglvi8] {
+.empty-slot[b-w3n0ti2oby] {
     color: darkgrey;
     font-style: italic;
     font-size: 0.9rem;
 }
-/* /Pages/Teacher/Pages/EditGrades.razor.rz.scp.css */
-/* /Pages/Teacher/Pages/Grades.razor.rz.scp.css */
-.custom-grade-badge[b-7zpkmkgvw0] {
+/* /Pages/Teacher/Pages/EditGrades/EditGrades.razor.rz.scp.css */
+/* /Pages/Teacher/Pages/Grades/Components/GradeBook.razor.rz.scp.css */
+.custom-grade-badge[b-oyj3qsmsfl] {
     background-color: #f0f4f8;
     color: #2c3e50;
     border: 1px solid #dcdde1;
@@ -485,4 +485,3 @@ main[b-tmopy668it] {
     font-size: 0.85rem;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-/* /Pages/Teacher/Pages/Profile.razor.rz.scp.css */

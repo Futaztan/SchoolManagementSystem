@@ -1,0 +1,32 @@
+﻿@page "/teacher/edit-grades"
+@using Client.Pages.Components
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using MudBlazor
+@using Shared.DTOs
+@inject AuthenticationStateProvider AuthStateProvider
+@attribute [Authorize(Roles = "Teacher")]
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+
+<MudText Typo="Typo.h4" Class="mb-6 font-weight-bold" Color="Color.Primary">Edit Grades</MudText>
+
+@if (schoolClasses is null)
+{
+    <LoadingCircle/>
+}
+else if (schoolClasses.Count == 0)
+{
+    <MudAlert Severity="Severity.Info" Variant="Variant.Filled" Class="mt-4">
+        There is no availabe class!
+    </MudAlert>
+}
+else
+{
+    <SelectionForm SchoolClasses="schoolClasses" SelectionModel="selectionModel" OnSearchTriggered="GetStudentGrades"/>
+}
+
+@if (student is not null)
+{
+    <GradeTable GradesListModel="gradesListModel"/>
+}

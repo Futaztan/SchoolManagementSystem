@@ -50,10 +50,10 @@ namespace Server
             {
                 options.AddPolicy("BlazorPolicy", policy =>
                 {
-                    policy.WithOrigins("https://localhost:7091") // Ide írd a Blazor appod pontos URL-jét!
+                    policy.WithOrigins("https://localhost:7091") 
                           .AllowAnyMethod()
                           .AllowAnyHeader()
-                          .AllowCredentials(); // Fontos, ha sütiket vagy auth fejléceket használsz
+                          .AllowCredentials(); 
                 });
             });
             builder.Services.AddControllers();

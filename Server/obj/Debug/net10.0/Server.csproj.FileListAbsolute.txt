@@ -162,3 +162,4 @@ C:\Users\David\source\repos\SchoolManagementSystem\Server\bin\Debug\net10.0\Micr
 C:\Users\David\source\repos\SchoolManagementSystem\Server\bin\Debug\net10.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Users\David\source\repos\SchoolManagementSystem\Server\bin\Debug\net10.0\Mapster.dll
 C:\Users\David\source\repos\SchoolManagementSystem\Server\bin\Debug\net10.0\Mapster.Core.dll
+C:\Users\David\source\repos\SchoolManagementSystem\Server\obj\Debug\net10.0\Server.sourcelink.json

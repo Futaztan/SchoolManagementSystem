@@ -1,0 +1,49 @@
+﻿@attribute [Authorize(Roles = "Student")]
+@page "/student/grades"
+@using System.Globalization
+@using Client.Pages.Components
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+@using Shared.DTOs
+@using Shared.Entities
+@inject HttpClient Http
+
+<MudText Typo="Typo.h5" Class="mt-8 mb-3 font-weight-bold d-flex align-center">
+	<MudIcon Icon="@Icons.Material.Filled.CalendarMonth" Class="mr-2" Color="Color.Success"/>
+	Grade book
+</MudText>
+
+@if (student == null)
+{
+	<LoadingCircle/>
+}
+else
+{
+	<GradeBook CourseDictionary="CourseDictionary" Student="student"/>
+}
+
+@code {
+
+	private Dictionary<string, List<int>> CourseDictionary = new();
+	private StudentDto? student;
+
+	protected override async Task OnInitializedAsync()
+	{
+		var response = await Http.GetFromJsonAsync<List<StudentDto>>("api/grades");
+		if (response != null)
+		{
+			student = response[0];
+			foreach (var grade in student.Grades)
+			{
+				if (!CourseDictionary.TryGetValue(grade.CourseName, out List<int> gradeList))
+				{
+					gradeList = new List<int>();
+					CourseDictionary[grade.CourseName] = gradeList;
+				}
+
+				gradeList.Add(grade.Value);
+			}
+		}
+	}
+
+}

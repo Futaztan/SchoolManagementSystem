@@ -1,0 +1,61 @@
+﻿@page "/teacher/profile"
+@using Client.Pages.Components
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+
+@using Shared.DTOs
+@attribute [Authorize(Roles = "Teacher")]
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+<h3>Profile</h3>
+
+@if (teacher == null)
+{
+    <LoadingCircle/>
+}
+else
+{
+    <MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudCard Elevation="3" Class="pa-4" Style="height: 100%;">
+                    <MudCardHeader>
+                     
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5">@teacher.Name</MudText>
+                           
+                        </CardHeaderContent>
+                    </MudCardHeader>
+
+                    <MudCardContent>
+                        <MudList T="string">
+                            <MudListItem Icon="@Icons.Material.Filled.Email" Text="@($"Email: {teacher.Email}")"/>
+                            <MudListItem Icon="@Icons.Material.Filled.Cake"
+                                         Text="@($"Birth date: {teacher.BirthDate?.ToString("yyyy. MM. dd.") ?? "No available data"}")"/>
+                            <MudListItem Icon="@Icons.Material.Filled.Book"
+                                         Text="@($"Teached subjects: {string.Join(", ", teacher.TeachedSubjects.Select(t => t.Name))}")"/>
+                        </MudList>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12" md="6">
+                <ChangePasswordForm/>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+}
+@code
+{
+    private TeacherDetailsDto? teacher;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await Http.GetFromJsonAsync<List<TeacherDetailsDto>>("api/teachers");
+        if (response != null)
+        {
+            teacher = response[0];
+        }
+    }
+}

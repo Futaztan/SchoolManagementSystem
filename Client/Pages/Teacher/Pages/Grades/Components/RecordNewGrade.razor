@@ -1,0 +1,74 @@
+﻿@using Client.Constants
+@using Client.Extensions
+@using MudBlazor
+@using Shared.DTOs
+<MudTable Items="@Students" Dense="true" Hover="true" Breakpoint="Breakpoint.Sm" Elevation="1">
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh>Current Average</MudTh>
+        <MudTh Style="width: 200px;">New Grade</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd Class="font-weight-bold">@context.Name</MudTd>
+        <MudTd>
+            <MudText Color="Color.Secondary" Class="font-weight-bold">@context.GetGradeSumAverage()</MudText>
+        </MudTd>
+        <MudTd>
+            <div style="max-width: 150px;">
+                <MudSelect T="string"
+                           Value="@GetSelectedGrade(context)"
+                           ValueChanged="@((string value) => OnGradeChanged(context, value))"
+                           Margin="Margin.Dense"
+                           PopoverClass="z-50"
+                           Variant="Variant.Outlined">
+                    <MudSelectItem Value="@("-")">-</MudSelectItem>
+                    <MudSelectItem Value="@("1")">1 - Fail</MudSelectItem>
+                    <MudSelectItem Value="@("2")">2 - Pass</MudSelectItem>
+                    <MudSelectItem Value="@("3")">3 - Satisfactory</MudSelectItem>
+                    <MudSelectItem Value="@("4")">4 - Good</MudSelectItem>
+                    <MudSelectItem Value="@("5")">5 - Excellent</MudSelectItem>
+                    >
+                </MudSelect>
+            </div>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+<div class="d-flex justify-end mt-4 mb-8">
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Success"
+               Size="Size.Large"
+               StartIcon="@Icons.Material.Filled.Save"
+               OnClick="@HandleSubmit">
+        Save All New Grades
+    </MudButton>
+</div>
+
+@code {
+    [Parameter] public required List<StudentDto> Students { get; set; }
+    [Parameter] public Dictionary<StudentDto, string> NewGradeDic { get; set; }
+
+    private string GetSelectedGrade(StudentDto student)
+    {
+        if (NewGradeDic.TryGetValue(student, out var jegy))
+        {
+            return jegy;
+        }
+
+        return "-";
+    }
+
+    private void OnGradeChanged(StudentDto student, string value)
+    {
+        NewGradeDic[student] = value;
+    }
+
+    [Parameter] public required EventCallback<Grades.SelectionModel> OnSubmit { get; set; }
+
+    private async Task HandleSubmit()
+    {
+        await OnSubmit.InvokeAsync();
+    }
+
+
+}

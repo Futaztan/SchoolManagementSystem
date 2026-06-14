@@ -1,0 +1,46 @@
+﻿@page "/teacher/grades"
+@using Client.Pages.Components
+@using Client.Pages.Teacher.Pages.Grades.Components
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using MudBlazor
+@inject HttpClient Http
+@using Shared.Entities
+@inject AuthenticationStateProvider AuthStateProvider
+@attribute [Authorize(Roles = "Teacher")]
+<MudText Typo="Typo.h4" Class="mb-4 font-weight-bold">Osztálynapló & Jegyek</MudText>
+
+@if (schoolClasses.Count == 0)
+{
+	<LoadingCircle/>
+}
+
+else
+{
+	<SelectionForm SchoolClasses="schoolClasses" SelectionModel="selectionModel" OnSubmit="@HandleSubmit"/>
+}
+
+@if (students != null)
+{
+	<MudText Typo="Typo.h5" Class="mt-6 mb-2 d-flex align-center">
+		<MudIcon Icon="@Icons.Material.Filled.Assessment" Class="mr-2" Color="Color.Info"/>
+		Grade book
+	</MudText>
+
+	<GradeBook Students="students"/>
+
+	<MudDivider Class="my-6"/>
+
+	<MudText Typo="Typo.h5" Class="mt-6 mb-2 d-flex align-center">
+		<MudIcon Icon="@Icons.Material.Filled.AppRegistration" Class="mr-2" Color="Color.Success"/>
+		Quick Record New Grades
+	</MudText>
+	
+
+	<RecordNewGrade Students="students" OnSubmit="@OnSaveNewGrades" NewGradeDic="newGradeDic" /> 
+
+	
+}
+
+
+

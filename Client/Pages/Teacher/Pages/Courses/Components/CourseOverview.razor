@@ -1,0 +1,120 @@
+﻿@using Client.Extensions
+@using MudBlazor
+@using Shared.Entities
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+
+
+<MudTable T="CourseDto" Items="@Courses" MultiSelection="true" Dense="true" SortLabel="Rendezés"
+          Filter="new Func<CourseDto, bool>(FilterFunc)" @bind-SelectedItems="selectedCourses" Hover="true"
+          Breakpoint="Breakpoint.Sm" Elevation="1" Class="mb-8">
+
+    <ToolBarContent>
+        <MudText Typo="Typo.h6" Class="font-weight-bold">Course table</MudText>
+        <MudSpacer/>
+        <MudTextField @bind-Value="searchString" Placeholder="Searcing..." Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                      Class="mt-0" Immediate="true" Style="max-width: 300px;"></MudTextField>
+
+        @if (selectedCourses.Any())
+        {
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Error"
+                       StartIcon="@Icons.Material.Filled.Delete"
+                       OnClick="@OnDeleteSelected"
+                       Class="ml-4">
+                Delete selected items (@selectedCourses.Count)
+            </MudButton>
+        }
+    </ToolBarContent>
+
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<CourseDto, object>(x => x.Id)">ID</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<CourseDto, object>(x => x.Subject.Name)">Subject</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<CourseDto, object>(x => x.SchoolClassName)">Class
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>Day</MudTh>
+        <MudTh>Time</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Subject" Class="font-weight-bold">@context.Subject.Name</MudTd>
+        <MudTd DataLabel="Class">
+            <MudChip T="string" Size="Size.Small" Color="Color.Primary"
+                     Variant="Variant.Text">@context.SchoolClassName</MudChip>
+        </MudTd>
+        <MudTd DataLabel="Days">
+            @foreach (var sch in context.CourseSchedules)
+            {
+                <MudText Typo="Typo.body2" Class="d-block">@sch.DayOfWeek</MudText>
+            }
+        </MudTd>
+        <MudTd DataLabel="Time">
+            @foreach (var sch in context.CourseSchedules)
+            {
+                <MudText Typo="Typo.body2" Color="Color.Secondary" Class="d-block font-weight-bold">
+                    @(sch.LessonNumber + 7):00 - @(sch.LessonNumber + 7):45
+                </MudText>
+            }
+        </MudTd>
+    </RowTemplate>
+
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100 }"
+                       RowsPerPageString="Items/page:"
+                       InfoFormat="{first_item}-{last_item} / {all_items} course"
+                       AllItemsText="Show all"
+                       HorizontalAlignment="HorizontalAlignment.Right"/>
+    </PagerContent>
+</MudTable>
+
+
+
+
+
+
+@code{
+
+    [Parameter] public List<CourseDto> Courses { get; set; }
+    private HashSet<CourseDto> selectedCourses = new();
+    private string searchString = "";
+    private List<int> LessonsNumbers = Enumerable.Range(0, 10).ToList();
+
+
+    private async Task OnDeleteSelected()
+    {
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        var idsToDelete = selectedCourses.Select(s => s.Id).ToList();
+        if (!idsToDelete.Any()) return;
+        var response = await Http.PostAsJsonAsync("api/classes/bulk-delete", idsToDelete);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Courses.RemoveAll(s => idsToDelete.Contains(s.Id));
+            selectedCourses.Clear();
+            Snackbar.Add($"{idsToDelete.Count} tárgy törölve.", Severity.Success);
+            StateHasChanged();
+        }
+        else Snackbar.Add($"Sikertelen", Severity.Error);
+    }
+
+    private bool FilterFunc(CourseDto course)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (course.SchoolClassName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (course.Subject.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+
+        return false;
+    }
+
+}

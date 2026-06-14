@@ -1,0 +1,56 @@
+﻿@using System.Globalization
+@using Client.Constants
+@using Client.Extensions
+@using MudBlazor
+@using Shared.DTOs
+@using Shared.Entities
+<MudTable Items="@Students" Dense="true" Hover="true" Breakpoint="Breakpoint.Sm" Elevation="1" Class="mb-8">
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<Student, object>(x=>x.Name)">Name</MudTableSortLabel>
+        </MudTh>
+        <MudTh>Class</MudTh>
+        @foreach (var month in AppConstants.Months)
+        {
+            <MudTh Style="text-align: center; font-weight: bold;">@AppConstants.GetMonthName(month)</MudTh>
+        }
+        <MudTh Style="font-weight: bold;">Average</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name" Class="font-weight-bold">@context.Name</MudTd>
+        <MudTd DataLabel="Class">
+            <MudChip T="string" Size="Size.Small" Variant="Variant.Text"
+                     Color="Color.Dark">@context.SchoolClassName</MudChip>
+        </MudTd>
+        @foreach (var month in AppConstants.Months)
+        {
+            <MudTd Style="text-align: center; vertical-align: middle;">
+                @{
+                    var gradesList = context.GetMonthlyGradeData(month);
+                }
+                @if (gradesList.Count == 0)
+                {
+                    <span style="color: #bdbdbd;">-</span>
+                }
+                else
+                {
+                    <div class="d-flex flex-wrap gap-1 justify-center">
+                        @foreach (var grade in gradesList)
+                        {
+                            <span class="custom-grade-badge">@grade.Value</span>
+                        }
+                    </div>
+                }
+            </MudTd>
+        }
+        <MudTd DataLabel="Average" Class="font-weight-bold">
+            @context.GetGradeSumAverage()
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    [Parameter]
+    public required List<StudentDto> Students { get; set; }
+    
+}

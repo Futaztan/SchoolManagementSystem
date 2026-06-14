@@ -1,0 +1,43 @@
+﻿@using Client.Extensions
+@using Client.Pages.Components
+@using MudBlazor
+@using Shared.Entities
+<MudTable Items="LessonsNumbers" Hover="true" Bordered="true" Dense="true" Elevation="1"
+          Class="mb-12 custom-timetable">
+    <HeaderContent>
+        <MudTh Style="width: 80px; font-weight: bold; background-color: gray;">Hour</MudTh>
+        <MudTh Style="font-weight: bold; text-align: center;">Monday</MudTh>
+        <MudTh Style="font-weight: bold; text-align: center;">Tuesday</MudTh>
+        <MudTh Style="font-weight: bold; text-align: center;">Wednesday</MudTh>
+        <MudTh Style="font-weight: bold; text-align: center;">Thursday</MudTh>
+        <MudTh Style="font-weight: bold; text-align: center;">Friday</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd Style="font-weight: bold; background-color: grey;">@context. lesson</MudTd>
+        @for (int i = 1; i < 6; i++)
+        {
+            int dayidx = i;
+            var day = (DayOfWeek)dayidx;
+            CourseDto course = Courses.GetCourseForSlot(day, context);
+            <MudTd Style="text-align: center; width: 18%; height: 70px; vertical-align: middle;">
+
+
+                @if (course != null)
+                {
+                    var sch = course.CourseSchedules.FirstOrDefault(s => s.DayOfWeek == day && s.LessonNumber == context);
+                    <Card Course="course" CourseSchedule="sch"></Card>
+                }
+                else
+                {
+                    <span class="empty-slot">-</span>
+                }
+            </MudTd>
+        }
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private List<int> LessonsNumbers = Enumerable.Range(0, 10).ToList();
+    [Parameter] public List<CourseDto> Courses { get; set; }
+    
+}

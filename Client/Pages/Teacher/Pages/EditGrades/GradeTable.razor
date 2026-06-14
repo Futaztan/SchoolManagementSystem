@@ -1,0 +1,154 @@
+﻿@using System.Net
+@using MudBlazor
+@using Shared.DTOs
+<MudCard Elevation="4" Class="pa-6 mt-6 rounded-lg">
+    <div class="d-flex align-center mb-4">
+        <MudIcon Icon="@Icons.Material.Filled.Assignment" Color="Color.Primary" Class="mr-2" Size="Size.Large"/>
+        <MudText Typo="Typo.h5" Color="Color.Primary" Class="font-weight-bold">Manage Data</MudText>
+    </div>
+
+    <MudTable Items="@GradesListModel" T="EditGrades.GradesListModel" Dense="false" Hover="true" Striped="true"
+              Class="elevation-0">
+        <HeaderContent>
+            <MudTh>
+                <MudTableSortLabel SortBy="new Func<EditGrades.GradesListModel, object>(x=>x.Subject)">Subject
+                </MudTableSortLabel>
+            </MudTh>
+            <MudTh Style="width: 180px;">Date</MudTh>
+            <MudTh Style="width: 180px;">Grade</MudTh>
+            <MudTh Style="width: 80px;" Class="text-center">Delete</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Subject">@context.Subject</MudTd>
+            <MudTd DataLabel="Date">@context.Date</MudTd>
+            <MudTd DataLabel="Grade">
+                <MudChip T="string" Color="Color.Primary" Variant="Variant.Text" Size="Size.Small"
+                         Class="font-weight-bold">
+                    @context.Grade
+                </MudChip>
+            </MudTd>
+            <MudTd Class="text-center">
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               Size="Size.Medium"
+                               OnClick="@(() => RemoveItem(context))"
+                               Title="Delete"/>
+            </MudTd>
+        </RowTemplate>
+        <RowEditingTemplate>
+            <MudTd DataLabel="Subject">
+                <MudText>@context.Subject</MudText>
+            </MudTd>
+            <MudTd DataLabel="Date">
+                <MudText>@context.Date</MudText>
+            </MudTd>
+            <MudTd DataLabel="Grade">
+                <MudNumericField @bind-Value="@context.Grade"
+                                 Required="true"
+                                 Min="1"
+                                 Max="5"
+                                 Variant="Variant.Outlined"
+                                 Margin="Margin.Dense"/>
+            </MudTd>
+            <MudTd></MudTd>
+        </RowEditingTemplate>
+    </MudTable>
+
+    <div class="d-flex justify-end gap-3 mt-6">
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Secondary"
+                   Size="Size.Large"
+                   StartIcon="@Icons.Material.Filled.Cancel"
+                   OnClick="@(() => CancelChanges())">
+            Cancel
+        </MudButton>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Success"
+                   Size="Size.Large"
+                   StartIcon="@Icons.Material.Filled.Save"
+                   OnClick="@(() => SubmitChanges())">
+            Save
+        </MudButton>
+    </div>
+</MudCard>
+
+@code {
+    [Parameter] public required List<EditGrades.GradesListModel> GradesListModel { get; set; }
+    private List<EditGrades.GradesListModel> copyOfGradesListModel = new();
+    [Inject] private ISnackbar Snackbar { get; set; } = default!;
+    [Inject] private HttpClient Http { get; set; } = default!;
+
+
+    protected override void OnParametersSet()
+    {
+        copyOfGradesListModel = GradesListModel.Select(g => new EditGrades.GradesListModel
+        {
+            Id = g.Id,
+            Subject = g.Subject,
+            Grade = g.Grade,
+            Date = g.Date
+        }).ToList();
+    }
+
+    private void RemoveItem(EditGrades.GradesListModel gradeToRemove)
+    {
+        GradesListModel.Remove(gradeToRemove);
+    }
+
+    private void CancelChanges()
+    {
+        GradesListModel = copyOfGradesListModel.Select(g => new EditGrades.GradesListModel
+        {
+            Id = g.Id,
+            Subject = g.Subject,
+            Grade = g.Grade,
+            Date = g.Date
+        }).ToList();
+        StateHasChanged();
+    }
+
+    private void CheckDifferences(out List<int> deletedIds, out List<GradeValueRecord> modifiedGrades)
+    {
+        deletedIds = new();
+        modifiedGrades = new();
+        foreach (var grade in copyOfGradesListModel)
+        {
+            var ogGrade = GradesListModel.SingleOrDefault(g => g.Id == grade.Id);
+            if (ogGrade == null)
+            {
+                deletedIds.Add(grade.Id);
+            }
+
+            else if (grade.Grade != ogGrade.Grade)
+            {
+                modifiedGrades.Add(new GradeValueRecord(ogGrade.Id, ogGrade.Grade));
+            }
+        }
+    }
+
+
+    private async Task SubmitChanges()
+    {
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        CheckDifferences(out List<int> deletedIds, out List<GradeValueRecord> modifiedGrades);
+        var gradebatchdto = new GradeBatchUpdateDto() { DeletedIds = deletedIds, UpdatedIdsAndValues = modifiedGrades };
+
+        var response = await Http.PostAsJsonAsync("api/grades/batch-update", gradebatchdto);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Snackbar.Add($"{deletedIds.Count} grades were deleted\n{modifiedGrades.Count} grades were modified.",
+                Severity.Success);
+            copyOfGradesListModel = GradesListModel.Select(g => new EditGrades.GradesListModel
+            {
+                Id = g.Id,
+                Subject = g.Subject,
+                Grade = g.Grade,
+                Date = g.Date
+            }).ToList();
+            StateHasChanged();
+        }
+        else Snackbar.Add($"Sikertelen", Severity.Error);
+    }
+
+}

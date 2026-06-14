@@ -7,11 +7,13 @@ using Shared.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class AuthController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -37,6 +39,20 @@ namespace Server.Controllers
 
             await _userManager.AddToRoleAsync(user, "Admin");
             return Ok();
+        }
+        
+       
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword(PasswordChangeModel pass)
+        {
+            
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var user = await _userManager.FindByIdAsync(userid);
+            var result = await _userManager.ChangePasswordAsync(user!, pass.CurrentPassword, pass.NewPassword);
+            if (result.Succeeded) return Ok();
+            var errors = result.Errors.Select(e => e.Description);
+            return BadRequest(new { Errors = errors });
+            
         }
 
 

@@ -56,28 +56,72 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGFnZXNcVGVhY2hlcnMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Components/ChangePasswordForm.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50c1xDaGFuZ2VQYXNzd29yZEZvcm0ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Components/LoadingCircle.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50c1xMb2FkaW5nQ2lyY2xlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Components/TimeTable.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50c1xUaW1lVGFibGUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Login.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Student/Pages/Grades.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudFxQYWdlc1xHcmFkZXMucmF6b3I=
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Student/Pages/Grades/Components/GradeBook.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudFxQYWdlc1xHcmFkZXNcQ29tcG9uZW50c1xHcmFkZUJvb2sucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Student/Pages/Home.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudFxQYWdlc1xIb21lLnJhem9y
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Student/Pages/Grades/Grades.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudFxQYWdlc1xHcmFkZXNcR3JhZGVzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Student/Pages/Home/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudFxQYWdlc1xIb21lXEhvbWUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Student/Pages/NotFound.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudFxQYWdlc1xOb3RGb3VuZC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Teacher/Pages/Home.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclxQYWdlc1xIb21lLnJhem9y
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Student/Pages/Profile/Profile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudFxQYWdlc1xQcm9maWxlXFByb2ZpbGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Teacher/Pages/Courses/Components/CourseOverview.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclxQYWdlc1xDb3Vyc2VzXENvbXBvbmVudHNcQ291cnNlT3ZlcnZpZXcucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Teacher/Pages/EditGrades/GradeTable.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclxQYWdlc1xFZGl0R3JhZGVzXEdyYWRlVGFibGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Teacher/Pages/EditGrades/SelectionForm.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclxQYWdlc1xFZGl0R3JhZGVzXFNlbGVjdGlvbkZvcm0ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Teacher/Pages/Grades/Components/RecordNewGrade.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclxQYWdlc1xHcmFkZXNcQ29tcG9uZW50c1xSZWNvcmROZXdHcmFkZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Teacher/Pages/Grades/Components/SelectionForm.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclxQYWdlc1xHcmFkZXNcQ29tcG9uZW50c1xTZWxlY3Rpb25Gb3JtLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Teacher/Pages/Grades/Grades.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclxQYWdlc1xHcmFkZXNcR3JhZGVzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Teacher/Pages/Home/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclxQYWdlc1xIb21lXEhvbWUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Teacher/Pages/Profile/Profile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclxQYWdlc1xQcm9maWxlXFByb2ZpbGUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/David/source/repos/SchoolManagementSystem/Client/_Imports.razor]
@@ -104,30 +148,26 @@ build_metadata.AdditionalFiles.CssScope = b-5d4xacm744
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudFxOYXZNZW51LnJhem9y
 build_metadata.AdditionalFiles.CssScope = b-woa27o8q8n
 
-[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Student/Pages/Courses.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudFxQYWdlc1xDb3Vyc2VzLnJhem9y
-build_metadata.AdditionalFiles.CssScope = b-ea6iqh7y76
-
-[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Student/Pages/Profile.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudFxQYWdlc1xQcm9maWxlLnJhem9y
-build_metadata.AdditionalFiles.CssScope = b-2if1n9qiq7
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Student/Pages/Courses/Courses.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudFxQYWdlc1xDb3Vyc2VzXENvdXJzZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-9enlvdac17
 
 [C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Teacher/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclxOYXZNZW51LnJhem9y
 build_metadata.AdditionalFiles.CssScope = b-cw2yn0qoxq
 
-[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Teacher/Pages/Courses.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclxQYWdlc1xDb3Vyc2VzLnJhem9y
-build_metadata.AdditionalFiles.CssScope = b-3d3lwglvi8
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Teacher/Pages/Courses/Components/NewCourseForm.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclxQYWdlc1xDb3Vyc2VzXENvbXBvbmVudHNcTmV3Q291cnNlRm9ybS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-w7jqo69piy
 
-[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Teacher/Pages/EditGrades.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclxQYWdlc1xFZGl0R3JhZGVzLnJhem9y
-build_metadata.AdditionalFiles.CssScope = b-pjhhk51aoh
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Teacher/Pages/Courses/Courses.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclxQYWdlc1xDb3Vyc2VzXENvdXJzZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-w3n0ti2oby
 
-[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Teacher/Pages/Grades.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclxQYWdlc1xHcmFkZXMucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = b-7zpkmkgvw0
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Teacher/Pages/EditGrades/EditGrades.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclxQYWdlc1xFZGl0R3JhZGVzXEVkaXRHcmFkZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-j3uiuqopnp
 
-[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Teacher/Pages/Profile.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclxQYWdlc1xQcm9maWxlLnJhem9y
-build_metadata.AdditionalFiles.CssScope = b-a4qhmujd53
+[C:/Users/David/source/repos/SchoolManagementSystem/Client/Pages/Teacher/Pages/Grades/Components/GradeBook.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlclxQYWdlc1xHcmFkZXNcQ29tcG9uZW50c1xHcmFkZUJvb2sucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-oyj3qsmsfl

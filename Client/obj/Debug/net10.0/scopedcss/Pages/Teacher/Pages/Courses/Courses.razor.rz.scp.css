@@ -1,0 +1,9 @@
+.custom-timetable th[b-w3n0ti2oby], .custom-timetable td[b-w3n0ti2oby] {
+    border: 1px solid green !important;
+}
+
+.empty-slot[b-w3n0ti2oby] {
+    color: darkgrey;
+    font-style: italic;
+    font-size: 0.9rem;
+}

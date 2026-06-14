@@ -1,0 +1,62 @@
+﻿@page "/student/profile"
+@using Client.Pages.Components
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+
+@using Shared.DTOs
+@attribute [Authorize(Roles = "Student")]
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+<h3>Profile</h3>
+
+@if (student == null)
+{
+    <LoadingCircle/>
+}
+else
+{
+    <MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudCard Elevation="3" Class="pa-4" Style="height: 100%;">
+                    <MudCardHeader>
+                     
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h5">@student.Name</MudText>
+                           
+                        </CardHeaderContent>
+                    </MudCardHeader>
+
+                    <MudCardContent>
+                        <MudList T="string">
+                            <MudListItem Icon="@Icons.Material.Filled.Email" Text="@($"Email: {student.Email}")"/>
+                            <MudListItem Icon="@Icons.Material.Filled.Cake"
+                                         Text="@($"Date of Birth: {student.BirthDate?.ToString("yyyy. MM. dd.") ?? "Not specified"}")"/>
+                            <MudListItem Icon="@Icons.Material.Filled.Class"
+                                         Text="@($"Class: {student.SchoolClassName}")"/>
+                        </MudList>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12" md="6">
+                <ChangePasswordForm/>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+}
+@code{
+
+    private StudentDetailsDto? student;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await Http.GetFromJsonAsync<List<StudentDetailsDto>>("api/students");
+        if (response != null)
+        {
+            student = response[0];
+        }
+    }
+
+}

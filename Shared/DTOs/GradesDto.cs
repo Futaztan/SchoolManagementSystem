@@ -12,7 +12,7 @@ namespace Shared.DTOs
         public int Value { get; set; }
      
         public int CourseId { get; set; }
-        public string CourseName { get; set; }
+        public string? CourseName { get; set; }
         public int StudentId { get; set; }
        
         public DateOnly Date { get; set; }

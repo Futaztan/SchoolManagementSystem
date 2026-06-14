@@ -1,0 +1,50 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using MudBlazor
+@using Shared.Entities
+@using Client.Pages.Components
+@using Client.Pages.Teacher.Pages.Courses.Components
+@attribute [Authorize(Roles = "Teacher")]
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+@page "/teacher/courses"
+
+
+
+
+@if (subjects.Count == 0 || schoolClasses.Count == 0 || rooms.Count == 0)
+{
+    <LoadingCircle/>
+}
+else
+{
+    <MudText Typo="Typo.h4" Class="mb-2 font-weight-bold">Managing courses</MudText>
+
+    <NewCourseForm courseModel="courseModel" rooms="rooms" OnCourseAdded="HandleAdd" schoolClasses="schoolClasses"
+                   subjects="subjects"/>
+}
+@if (courses.Count == 0)
+{
+    <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Class="my-4">The list of courses is empty!</MudAlert>
+}
+else
+{
+    <MudText Typo="Typo.h5" Class="mt-6 mb-3 font-weight-bold d-flex align-center">
+        <MudIcon Icon="@Icons.Material.Filled.List" Class="mr-2" Color="Color.Info"/>
+        Course overview
+    </MudText>
+
+    <CourseOverview Courses="courses"/>
+
+    <MudText Typo="Typo.h5" Class="mt-8 mb-3 font-weight-bold d-flex align-center">
+        <MudIcon Icon="@Icons.Material.Filled.CalendarMonth" Class="mr-2" Color="Color.Success"/>
+        Timetable
+    </MudText>
+    <TimeTable Courses="courses"/>
+}
+
+
+
+
+
+

@@ -1,0 +1,114 @@
+﻿@using MudBlazor
+   
+@using Shared.DTOs
+<MudCard Elevation="2" Class="mb-8 pa-5 bg-light">
+            <MudText Typo="Typo.h6" Class="mb-4 d-flex align-center">
+                <MudIcon Icon="@Icons.Material.Filled.AddCircleOutline" Class="mr-2" Color="Color.Primary"></MudIcon>
+
+                Create new course
+            </MudText>
+
+            <EditForm Context="formContext" Model="courseModel" OnValidSubmit="OnFormSubmit">
+                <DataAnnotationsValidator/>
+                <ValidationSummary/>
+
+                <MudGrid Spacing="3" Alignment="GridAlignment.Center">
+                    <MudItem xs="12" sm="4">
+                        <MudSelect T="int" Label="Subject" @bind-Value="courseModel.SubjectId"
+                                   Variant="Variant.Outlined" Margin="Margin.Dense">
+                            <MudSelectItem T="int" Value="0">-- Select an option --</MudSelectItem>
+                            @foreach (var item in subjects)
+                            {
+                                <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="4">
+                        <MudSelect T="int" Label="Osztály" @bind-Value="courseModel.SchoolClassId"
+                                   Variant="Variant.Outlined" Margin="Margin.Dense">
+                            <MudSelectItem T="int" Value="0">-- Select an option --</MudSelectItem>
+                            @foreach (var item in schoolClasses)
+                            {
+                                <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="4">
+                        <MudSelect T="DayOfWeek?" Label="Day" @bind-Value="courseModel.DayOfWeek"
+                                   Variant="Variant.Outlined" Margin="Margin.Dense">
+                            <MudSelectItem T="DayOfWeek?" Value="null">-- Select an option --</MudSelectItem>
+                            <MudSelectItem T="DayOfWeek?" Value="@DayOfWeek.Monday">Monday</MudSelectItem>
+                            <MudSelectItem T="DayOfWeek?" Value="@DayOfWeek.Tuesday">Tuesday</MudSelectItem>
+                            <MudSelectItem T="DayOfWeek?" Value="@DayOfWeek.Wednesday">Wednesday</MudSelectItem>
+                            <MudSelectItem T="DayOfWeek?" Value="@DayOfWeek.Thursday">Thursday</MudSelectItem>
+                            <MudSelectItem T="DayOfWeek?" Value="@DayOfWeek.Friday">Friday</MudSelectItem>
+                        </MudSelect>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="4">
+                        <MudSelect T="int" Label="Room" @bind-Value="courseModel.RoomId" Variant="Variant.Outlined"
+                                   Margin="Margin.Dense">
+                            <MudSelectItem T="int" Value="0">-- Select an option --</MudSelectItem>
+                            @foreach (var item in rooms)
+                            {
+                                <MudSelectItem T="int" Value="@((int)item.Id)">@item.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="4">
+                        <MudSelect T="int" Label="Lesson" @bind-Value="courseModel.LessonNumber"
+                                   Variant="Variant.Outlined" Margin="Margin.Dense">
+                            <MudSelectItem T="int" Value="99">-- Select an option --</MudSelectItem>
+                            @{
+                                int hour = 7;
+                                for (int i = 0; i <= 9; i++)
+                                {
+                                    int currentLesson = i;
+                                    int currentHour = hour;
+                                    <MudSelectItem T="int"
+                                                   Value="@currentLesson">@($"{currentLesson}. lesson ({currentHour}:00-{currentHour}:45)")</MudSelectItem>
+                                    hour++;
+                                }
+                            }
+                        </MudSelect>
+                    </MudItem>
+
+                    <MudItem xs="12" sm="4" Class="d-flex align-center justify-sm-end pt-4">
+                        <MudButton ButtonType="ButtonType.Submit"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Size="Size.Large"
+                                   FullWidth="true"
+                                   StartIcon="@Icons.Material.Filled.Add">
+                            Create
+                        </MudButton>
+                    </MudItem>
+                </MudGrid>
+            </EditForm>
+        </MudCard>
+
+@code {
+    
+    [Parameter]
+    public NewCourseModel courseModel { get; set; }
+    [Parameter]
+    public List<RoomDto> rooms { get; set; }
+    [Parameter]
+    public List<SubjectDto> subjects { get; set; }
+    [Parameter]
+    public List<SchoolClassDto> schoolClasses { get; set; }
+    
+    [Parameter] 
+    public EventCallback<NewCourseModel> OnCourseAdded { get; set; }
+
+    private async Task OnFormSubmit()
+    {
+    
+        await OnCourseAdded.InvokeAsync(courseModel);
+        courseModel = new NewCourseModel();
+    }
+    
+}
