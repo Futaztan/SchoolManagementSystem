@@ -1,0 +1,86 @@
+﻿@using MudBlazor
+@using Shared.DTOs
+@inject ISnackbar Snackbar
+@inject HttpClient Http
+<MudTable Items="@Teachers" MultiSelection="true" Dense="true" SortLabel="Sort by" Filter="new Func<TeacherDetailsDto, bool>(FilterFunc)" @bind-SelectedItems="selectedTeachers" Hover="true" Breakpoint="Breakpoint.Sm">
+
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Teachers</MudText>
+        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudSpacer  /> 
+
+
+        @if (selectedTeachers.Any())
+        {
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Error"
+                       StartIcon="@Icons.Material.Filled.Delete"
+                       OnClick="@OnDeleteSelected"
+                       Class="ml-4">
+                Delete (@selectedTeachers.Count)
+            </MudButton>
+        }
+    </ToolBarContent>
+
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<TeacherDetailsDto, object>(x => x.Name)"> Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<TeacherDetailsDto, object>(x => x.Email)"> Email</MudTableSortLabel></MudTh>
+			
+			
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Email">@context.Email</MudTd>
+        <MudTd DataLabel="Subjects">
+            @foreach (var subject in context.TeachedSubjects)
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Info" Variant="Variant.Text">@subject.Name</MudChip>
+            }
+        </MudTd>
+			
+    </RowTemplate>
+
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100, int.MaxValue }"
+                       RowsPerPageString="Rows per page:"
+                       InfoFormat="{first_item}-{last_item} of {all_items}"
+                       AllItemsText="All"
+                       HorizontalAlignment="HorizontalAlignment.Right"
+        />
+    </PagerContent>
+		
+</MudTable>
+@code {
+    [Parameter]
+    public List<TeacherDetailsDto> Teachers { get; set; }
+    private string searchString = "";
+    private HashSet<TeacherDetailsDto> selectedTeachers = new ();
+    private async Task OnDeleteSelected()
+    {
+        var idsToDelete = selectedTeachers.Select(s => s.Id).ToList();
+        if (!idsToDelete.Any()) return;
+        var response = await Http.PostAsJsonAsync("api/teachers/bulk-delete", idsToDelete);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Teachers.RemoveAll(s => idsToDelete.Contains(s.Id));
+            selectedTeachers.Clear();
+            Snackbar.Add($"{idsToDelete.Count} teacher(s) deleted.", Severity.Success);
+            StateHasChanged();
+        }
+        else Snackbar.Add($"Error", Severity.Error);
+
+    }
+    private bool FilterFunc(TeacherDetailsDto teacher)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (teacher.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (teacher.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (teacher.TeachedSubjects.Any(s => s.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+            return true;
+        return false;
+    }
+}

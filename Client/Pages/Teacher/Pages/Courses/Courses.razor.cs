@@ -46,9 +46,10 @@ public partial class Courses
             if (newCourse != null)
             {
                 courses.Add(newCourse);
-                Snackbar.Add($"Sikeres hozzáadás", Severity.Success);
+                Snackbar.Add($"Success", Severity.Success);
             }
         }
+        StateHasChanged();
     }
 
 

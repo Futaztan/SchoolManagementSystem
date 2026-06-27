@@ -25,7 +25,7 @@
                     </MudItem>
 
                     <MudItem xs="12" sm="4">
-                        <MudSelect T="int" Label="Osztály" @bind-Value="courseModel.SchoolClassId"
+                        <MudSelect T="int" Label="Class" @bind-Value="courseModel.SchoolClassId"
                                    Variant="Variant.Outlined" Margin="Margin.Dense">
                             <MudSelectItem T="int" Value="0">-- Select an option --</MudSelectItem>
                             @foreach (var item in schoolClasses)

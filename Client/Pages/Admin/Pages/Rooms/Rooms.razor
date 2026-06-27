@@ -1,0 +1,56 @@
+﻿@using Client.Pages.Admin.Pages.Rooms.Components
+@using Client.Pages.Components
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+@using Shared.DTOs
+@using Shared.Entities
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+@attribute [Authorize(Roles = "Admin")]
+@page "/admin/rooms"
+
+<h3>Add new Room</h3>
+
+<NewRoomForm OnSubmit="@HandleAdd" RoomModel="roomModel"/>
+
+<h3>Rooms</h3>
+@if (rooms == null)
+{
+   <LoadingCircle/>
+}
+else
+{
+   <RoomsTable Rooms="rooms"/>
+}
+
+
+
+@code {
+   private RoomDto roomModel = new();
+   private List<RoomDto> rooms = null;
+
+   private async Task HandleAdd()
+   {
+      {
+         var response = await Http.PostAsJsonAsync("api/rooms", roomModel);
+         if (response.IsSuccessStatusCode)
+         {
+            RoomDto newRoom = await response.Content.ReadFromJsonAsync<RoomDto>();
+            if (newRoom != null)
+            {
+               rooms.Add(newRoom);
+               Snackbar.Add($"Successfully added", Severity.Success);
+            }
+         }
+      }
+   }
+
+ 
+
+   protected override async Task OnInitializedAsync()
+   {
+      var response = await Http.GetFromJsonAsync<List<RoomDto>>("api/rooms");
+      if (response != null) rooms = response;
+   }
+
+}

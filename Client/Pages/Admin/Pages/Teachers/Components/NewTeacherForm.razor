@@ -1,0 +1,70 @@
+﻿@using MudBlazor
+@using Shared.DTOs
+<EditForm Model="TeacherModel" OnValidSubmit="HandleSubmit">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudTextField @bind-Value="TeacherModel.Name"
+                          Label="Name"
+                          Variant="Variant.Outlined"/>
+        </MudItem>
+
+        <MudItem xs="12" md="6">
+            <MudTextField @bind-Value="TeacherModel.Email"
+                          Label="Email"
+                          InputType="InputType.Email"
+                          Variant="Variant.Outlined"/>
+        </MudItem>
+
+        <MudItem xs="12" md="6">
+            <MudTextField @bind-Value="TeacherModel.Password"
+                          Label="Password"
+                          InputType="InputType.Password"
+                          Variant="Variant.Outlined"/>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.subtitle1" Class="mb-2">Subjects:</MudText>
+            <div class="d-flex flex-wrap gap-4">
+                @foreach (var subject in Subjects)
+                {
+                    <MudCheckBox T="bool"
+                                 Label="@subject.Name"
+                                 Color="Color.Primary"
+                                 ValueChanged="@(e => ToggleSubject(subject, e))"/>
+                }
+            </div>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                Add
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+    [Parameter] public required TeacherDetailsDto TeacherModel { get; set; }
+    [Parameter] public required List<SubjectDto> Subjects { get; set; }
+    [Parameter] public required HashSet<SubjectDto> SelectedSubjects { get; set; }
+
+    [Parameter] public required EventCallback<TeacherDetailsDto> OnSubmit { get; set; }
+
+    private async Task HandleSubmit()
+    {
+        await OnSubmit.InvokeAsync(TeacherModel);
+    }
+
+    private void ToggleSubject(SubjectDto subject, object checkedValue)
+    {
+        bool isChecked = (bool)checkedValue;
+
+        if (isChecked)
+            SelectedSubjects.Add(subject);
+        else
+            SelectedSubjects.Remove(subject);
+    }
+
+}

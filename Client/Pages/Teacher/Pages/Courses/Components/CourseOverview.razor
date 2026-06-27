@@ -5,7 +5,7 @@
 @inject ISnackbar Snackbar
 
 
-<MudTable T="CourseDto" Items="@Courses" MultiSelection="true" Dense="true" SortLabel="Rendezés"
+<MudTable T="CourseDto" Items="@Courses" MultiSelection="true" Dense="true" SortLabel="Sort"
           Filter="new Func<CourseDto, bool>(FilterFunc)" @bind-SelectedItems="selectedCourses" Hover="true"
           Breakpoint="Breakpoint.Sm" Elevation="1" Class="mb-8">
 
@@ -81,7 +81,8 @@
 
 @code{
 
-    [Parameter] public List<CourseDto> Courses { get; set; }
+    [Parameter] public required List<CourseDto> Courses { get; set; }
+    [Parameter] public required EventCallback<List<CourseDto>> OnCoursesChanged { get; set; }
     private HashSet<CourseDto> selectedCourses = new();
     private string searchString = "";
     private List<int> LessonsNumbers = Enumerable.Range(0, 10).ToList();
@@ -92,16 +93,18 @@
         Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
         var idsToDelete = selectedCourses.Select(s => s.Id).ToList();
         if (!idsToDelete.Any()) return;
-        var response = await Http.PostAsJsonAsync("api/classes/bulk-delete", idsToDelete);
+        var response = await Http.PostAsJsonAsync("api/courses/bulk-delete", idsToDelete);
 
         if (response.IsSuccessStatusCode)
         {
             Courses.RemoveAll(s => idsToDelete.Contains(s.Id));
             selectedCourses.Clear();
-            Snackbar.Add($"{idsToDelete.Count} tárgy törölve.", Severity.Success);
+            Snackbar.Add($"{idsToDelete.Count} course(es) deleted.", Severity.Success);
+            var updatedList = new List<CourseDto>(Courses);
+            await OnCoursesChanged.InvokeAsync(updatedList);
             StateHasChanged();
         }
-        else Snackbar.Add($"Sikertelen", Severity.Error);
+        else Snackbar.Add($"Error", Severity.Error);
     }
 
     private bool FilterFunc(CourseDto course)

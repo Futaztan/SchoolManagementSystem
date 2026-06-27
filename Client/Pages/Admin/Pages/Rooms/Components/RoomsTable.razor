@@ -1,0 +1,87 @@
+﻿@using MudBlazor
+@using Shared.DTOs
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+<MudTable Items="@Rooms" MultiSelection="true" Dense="true" SortLabel="Sort by"
+          Filter="new Func<RoomDto, bool>(FilterFunc)" @bind-SelectedItems="selectedRooms" Hover="true"
+          Breakpoint="Breakpoint.Sm">
+
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Rooms</MudText>
+        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudSpacer/>
+
+
+        @if (selectedRooms.Any())
+        {
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Error"
+                       StartIcon="@Icons.Material.Filled.Delete"
+                       OnClick="@OnDeleteSelected"
+                       Class="ml-4">
+                Delete (@selectedRooms.Count)
+            </MudButton>
+        }
+    </ToolBarContent>
+
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<RoomDto, object>(x => x.Id)"> ID</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<RoomDto, object>(x => x.Name)"> Name</MudTableSortLabel>
+        </MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+    </RowTemplate>
+
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100, int.MaxValue }"
+                       RowsPerPageString="Rows per page:"
+                       InfoFormat="{first_item}-{last_item} of {all_items}"
+                       AllItemsText="All"
+                       HorizontalAlignment="HorizontalAlignment.Right"
+        />
+    </PagerContent>
+
+</MudTable>
+
+@code {
+    [Parameter] public required List<RoomDto> Rooms { get; set; }
+    private HashSet<RoomDto> selectedRooms = new();
+    private string searchString = "";
+
+    private bool FilterFunc(RoomDto room)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (room.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (room.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+
+    private async Task OnDeleteSelected()
+    {
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        var idsToDelete = selectedRooms.Select(s => s.Id).ToList();
+        if (!idsToDelete.Any()) return;
+        var response = await Http.PostAsJsonAsync("api/rooms/bulk-delete", idsToDelete);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Rooms.RemoveAll(s => idsToDelete.Contains(s.Id));
+            selectedRooms.Clear();
+            Snackbar.Add($"{idsToDelete.Count} room(s) deleted.", Severity.Success);
+            StateHasChanged();
+        }
+        else Snackbar.Add($"Failed to delete", Severity.Error);
+    }
+
+
+}

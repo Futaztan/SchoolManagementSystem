@@ -29,7 +29,7 @@ namespace Server.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> BulkDeleteTeachers(List<int> ids)
         {
-            if (ids == null || !ids.Any()) return BadRequest("Nincs kijelölt elem.");
+            if (ids == null || !ids.Any()) return BadRequest("No selected items.");
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
@@ -49,7 +49,7 @@ namespace Server.Controllers
             catch (Exception e)
             {
 
-                return StatusCode(500, "Hiba történt: " + e.Message);
+                return StatusCode(500, "Error: " + e.Message);
             }
 
         }
@@ -63,42 +63,8 @@ namespace Server.Controllers
            
             return list;
         }
-        
-        // [Authorize(Roles = "Teacher")]
-        // [HttpPost("change-password")]
-        // public async Task<IActionResult> ChangePassword(PasswordChangeModel pass)
-        // {
-        //     
-        //     string userid = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-        //     var user = await _userManager.FindByIdAsync(userid);
-        //     var result = await _userManager.ChangePasswordAsync(user!, pass.CurrentPassword, pass.NewPassword);
-        //     if (result.Succeeded) return Ok();
-        //     var errors = result.Errors.Select(e => e.Description);
-        //     return BadRequest(new { Errors = errors });
-        //     
-        // }
 
-
-
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<TeacherDetailsDto>> AddTeacher(TeacherDetailsDto dto)
-        {
-            var user = new IdentityUser { UserName = dto.Name, Email = dto.Email };
-            var result = await _userManager.CreateAsync(user, dto.Password);
-            if (!result.Succeeded) return NoContent();
-            await _userManager.AddToRoleAsync(user, "Teacher");
-            var subjectNames = dto.TeachedSubjects.Select(ts => ts.Name).ToList();
-
-            List<Subject> subjects = await _context.Subjects.Where(s => subjectNames.Contains(s.Name)).ToListAsync();
-
-            Teacher teacher = new Teacher { Email = dto.Email, Name = dto.Name, TeachedSubjects = subjects, UserId = user.Id };
-            _context.Teachers.Add(teacher);
-            await _context.SaveChangesAsync();
-
-            TeacherDetailsDto returndto = await _context.Teachers.ProjectToType<TeacherDetailsDto>().SingleOrDefaultAsync(s => s.Id == teacher.Id);
-            return Ok(returndto);
-        }
+       
 
 
       

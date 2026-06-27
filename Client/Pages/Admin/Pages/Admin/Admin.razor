@@ -1,0 +1,50 @@
+﻿@using MudBlazor
+@using Shared.DTOs
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+@page "/admin/admins"
+<EditForm Model="adminModel" OnValidSubmit="HandleSubmit">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudTextField @bind-Value="adminModel.Name"
+                          Label="Name"
+                          Variant="Variant.Outlined"/>
+        </MudItem>
+
+
+        <MudItem xs="12">
+            <MudTextField @bind-Value="adminModel.Password"
+                          Label="Password"
+                          InputType="InputType.Password"
+                          Variant="Variant.Outlined"/>
+        </MudItem>
+
+
+        <MudItem xs="12">
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                Add
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+    private AdminDto adminModel = new();
+  
+
+    private async Task HandleSubmit()
+    {
+        if (!string.IsNullOrWhiteSpace(adminModel.Name) && !string.IsNullOrWhiteSpace(adminModel.Password))
+        {
+            var response = await Http.PostAsJsonAsync("api/auth/register-admin", adminModel);
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add($"Successful", Severity.Success);
+            }
+        }
+    }
+
+
+}

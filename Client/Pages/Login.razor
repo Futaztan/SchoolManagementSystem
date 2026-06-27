@@ -11,7 +11,7 @@
     <div class="card shadow-sm border-0" style="max-width: 400px; width: 100%; border-radius: 12px;">
         <div class="card-body p-4 p-sm-5">
 
-            <h3 class="card-title text-center fw-bold mb-4 text-primary">Bejelentkezés</h3>
+            <h3 class="card-title text-center fw-bold mb-4 text-primary">Login</h3>
 
             @if (!string.IsNullOrEmpty(errorMessage))
             {
@@ -26,21 +26,21 @@
 
                 <div class="form-floating mb-3">
                     <InputText @bind-Value="loginModel.Name" id="loginName" class="form-control"
-                               placeholder="Felhasználónév"/>
-                    <label for="loginName" class="text-muted">Felhasználónév</label>
+                               placeholder="User Name"/>
+                    <label for="loginName" class="text-muted">User Name</label>
                     <ValidationMessage For="@(() => loginModel.Name)" class="text-danger small mt-1"/>
                 </div>
 
                 <div class="form-floating mb-4">
                     <InputText @bind-Value="loginModel.Password" id="loginPassword" type="password" class="form-control"
-                               placeholder="Jelszó"/>
-                    <label for="loginPassword" class="text-muted">Jelszó</label>
+                               placeholder="Password"/>
+                    <label for="loginPassword" class="text-muted">Password</label>
                     <ValidationMessage For="@(() => loginModel.Password)" class="text-danger small mt-1"/>
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm"
                         style="border-radius: 8px;">
-                    Belépés
+                    Login
                 </button>
             </EditForm>
 
@@ -73,7 +73,7 @@
         }
         else
         {
-            errorMessage = "Hibás felhasználónév vagy jelszó!";
+            errorMessage = "Incorrect username or password!";
         }
     }
 

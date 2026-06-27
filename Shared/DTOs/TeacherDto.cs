@@ -13,7 +13,7 @@ namespace Shared.DTOs
         public int Id { get; set; }
 
         
-        public ICollection<CourseDto> Courses { get; set; }
+        public ICollection<CourseDto> Courses { get; set; } = new List<CourseDto>();
      
 
     }

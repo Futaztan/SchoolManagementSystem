@@ -1,0 +1,57 @@
+﻿@using MudBlazor
+@using Shared.DTOs
+<EditForm Model="StudentModel" OnValidSubmit="HandleSubmit">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudTextField @bind-Value="StudentModel.Name"
+                          Label="Name"
+                          Variant="Variant.Outlined"/>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudTextField @bind-Value="StudentModel.Email"
+                          Label="Email"
+                          InputType="InputType.Email"
+                          Variant="Variant.Outlined"/>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudTextField @bind-Value="StudentModel.Password"
+                          Label="Password"
+                          InputType="InputType.Password"
+                          Variant="Variant.Outlined"/>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudSelect @bind-Value="StudentModel.SchoolClassId"
+                       Label="Choose a class"
+                       Variant="Variant.Outlined">
+                <MudSelectItem Value="0">-- Please select --</MudSelectItem>
+                @foreach (var item in Classes)
+                {
+                    <MudSelectItem Value="@item.Id">@item.Name</MudSelectItem>
+                }
+            </MudSelect>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                Add
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+    [Parameter] public required StudentDetailsDto StudentModel { get; set; }
+    [Parameter] public required List<SchoolClassDto> Classes { get; set; }
+    [Parameter] public required EventCallback<StudentDto> OnSubmit { get; set; }
+
+    private async Task HandleSubmit()
+    {
+        await OnSubmit.InvokeAsync(StudentModel);
+    }
+
+}

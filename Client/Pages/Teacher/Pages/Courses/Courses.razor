@@ -34,7 +34,7 @@ else
         Course overview
     </MudText>
 
-    <CourseOverview Courses="courses"/>
+    <CourseOverview Courses="courses" OnCoursesChanged="HandleCoursesChanged"/>
 
     <MudText Typo="Typo.h5" Class="mt-8 mb-3 font-weight-bold d-flex align-center">
         <MudIcon Icon="@Icons.Material.Filled.CalendarMonth" Class="mr-2" Color="Color.Success"/>
@@ -42,7 +42,13 @@ else
     </MudText>
     <TimeTable Courses="courses"/>
 }
-
+@code
+{
+    private void HandleCoursesChanged(List<CourseDto> updatedCourses)
+    {
+        courses = updatedCourses; 
+    }
+}
 
 
 

@@ -1,0 +1,62 @@
+﻿@using System.Reflection.Metadata
+@using Client.Pages.Admin.Pages.SchoolClasses.Components
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+@using Shared.DTOs
+@using Shared.Entities
+@inject HttpClient Http
+@attribute [Authorize(Roles = "Admin")]
+@page "/admin/classes"
+@inject ISnackbar Snackbar
+
+
+
+<h3>Add new Class</h3>
+
+<NewClassForm OnSubmit="@HandleAdd" ClassModel="classModel"/>
+
+
+<h3>Classes</h3>
+
+<SchoolClassesTable Classes="classes"/>
+
+
+@code {
+
+
+	private SchoolClassDto classModel = new SchoolClassDto();
+	private int selectedClassID;
+
+	private async Task HandleAdd()
+	{
+		{
+			var response = await Http.PostAsJsonAsync("api/classes", classModel);
+			if (response.IsSuccessStatusCode)
+			{
+				SchoolClassDto newSchoolClass = await response.Content.ReadFromJsonAsync<SchoolClassDto>();
+				if (newSchoolClass != null)
+				{
+					classes.Add(newSchoolClass);
+					Snackbar.Add($"Success", Severity.Success);
+				}
+			}
+
+		}
+	}
+
+
+
+	
+	private List<SchoolClassDto> classes = null;
+
+	protected override async Task OnInitializedAsync()
+	{
+
+
+		var response = await Http.GetFromJsonAsync<List<SchoolClassDto>>("api/classes");
+		if (response != null) classes = response;
+
+	}
+	
+
+}

@@ -26,7 +26,7 @@ public partial class ChangePasswordForm
             if (response.IsSuccessStatusCode)
             {
                 Snackbar.Add("The password has been changed!", Severity.Success);
-                passwordModel = new(); // Form ürítése
+                passwordModel = new(); 
             }
             else
             {

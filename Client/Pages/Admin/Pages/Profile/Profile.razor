@@ -1,0 +1,11 @@
+﻿@page "/admin/profile"
+@using Client.Pages.Components
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+
+@using Shared.DTOs
+@attribute [Authorize(Roles = "Admin")]
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+<h3>Profile</h3>
+<ChangePasswordForm/>

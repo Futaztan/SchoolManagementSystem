@@ -8,7 +8,7 @@
 @using Shared.Entities
 @inject AuthenticationStateProvider AuthStateProvider
 @attribute [Authorize(Roles = "Teacher")]
-<MudText Typo="Typo.h4" Class="mb-4 font-weight-bold">Osztálynapló & Jegyek</MudText>
+<MudText Typo="Typo.h4" Class="mb-4 font-weight-bold">Grade book</MudText>
 
 @if (schoolClasses.Count == 0)
 {

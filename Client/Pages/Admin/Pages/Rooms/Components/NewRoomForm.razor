@@ -1,0 +1,31 @@
+﻿@using MudBlazor
+@using Shared.DTOs
+<EditForm Model="RoomModel" OnValidSubmit="HandleSubmit">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="4" Class="mb-3">
+        
+        <MudTextField @bind-Value="RoomModel.Name" 
+                      Label="Name" 
+                      Variant="Variant.Text" 
+                      Style="max-width: 300px;" />
+
+        <MudButton ButtonType="ButtonType.Submit" 
+                   Variant="Variant.Filled" 
+                   Color="Color.Primary"
+                   Class="mt-4">
+            Add
+        </MudButton>
+
+    </MudStack>
+</EditForm>
+
+@code {
+    [Parameter]
+    public required RoomDto RoomModel { get; set; }
+   
+    [Parameter] public required EventCallback<RoomDto> OnSubmit { get; set; }
+    
+    private async Task HandleSubmit()
+    {
+        await OnSubmit.InvokeAsync(RoomModel);
+    }
+}

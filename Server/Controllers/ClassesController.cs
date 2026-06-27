@@ -52,7 +52,7 @@ namespace Server.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> BulkDeleteClasses(List<int> ids)
         {
-            if (ids == null || !ids.Any()) return BadRequest("Nincs kijelölt elem.");
+            if (ids == null || !ids.Any()) return BadRequest("No selected items");
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
@@ -62,7 +62,7 @@ namespace Server.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Hiba történt: " + e.Message);
+                return StatusCode(500, "Error: " + e.Message);
             }
 
         }

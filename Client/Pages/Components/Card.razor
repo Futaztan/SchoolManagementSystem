@@ -1,6 +1,6 @@
-﻿@using Shared.DTOs 
+﻿@using MudBlazor
+@using Shared.DTOs 
 @using Shared.Entities
-@* Ha DTO-kat használsz *@
 
 <MudPaper Elevation="1" 
           Outlined="true" 
@@ -21,11 +21,11 @@
 </MudPaper>
 
 <style>
-    /* Biztosítjuk, hogy a kártya felvegye a szülő cella teljes magasságát és szélességét */
+    
     .timetable-card {
-        background-color: #f4f6f9 !important; /* Finom, tiszta háttérszín az óráknak */
+        background-color: #f4f6f9 !important; 
         border-color: mediumpurple !important;
-        border-left: 4px solid black   !important; /* Egy szép kék csík a bal szélén */
+        border-left: 4px solid black   !important; 
         border-radius: 4px;
         min-height: 60px;
     }

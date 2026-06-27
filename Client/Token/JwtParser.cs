@@ -16,7 +16,7 @@ namespace Client.Token
             {
                 foreach (var kvp in keyValuePairs)
                 {
-                    // HA A KULCS "role", AKKOR ClaimTypes.Role-t HASZNÁLUNK
+                  
                     if (kvp.Key == "role")
                     {
                         if (kvp.Value.ToString().StartsWith("["))
@@ -29,12 +29,12 @@ namespace Client.Token
                             claims.Add(new Claim(ClaimTypes.Role, kvp.Value.ToString()));
                         }
                     }
-                    // HA A KULCS "unique_name", AKKOR ClaimTypes.Name-t HASZNÁLUNK
+                    
                     else if (kvp.Key == "unique_name")
                     {
                         claims.Add(new Claim(ClaimTypes.Name, kvp.Value.ToString()));
                     }
-                    // MINDEN MÁS ESETBEN
+                  
                     else
                     {
                         claims.Add(new Claim(kvp.Key, kvp.Value.ToString()));

@@ -73,7 +73,7 @@ namespace Server.Controllers
             if (cId != null)
             {
                 SchoolClass? schoolClass = await _context.SchoolClasses.SingleOrDefaultAsync(c => c.Id == cId);
-                if (schoolClass == null) return BadRequest("Az osztály nem található az adatbázisban.");
+                if (schoolClass == null) return BadRequest("The class is not found.");
                 var courses = await _context.Courses.Where(c => c.SchoolClassId == schoolClass.Id).ToListAsync();
                 return Ok(courses);
             }
@@ -103,25 +103,24 @@ namespace Server.Controllers
         }
 
 
-        //TODO
 
-        //[HttpPost("bulk-delete")]
-        //[Authorize(Roles = "Admin")]
-        //public async Task<IActionResult> BulkDeleteRooms(List<int> ids)
-        //{
-        //    if (ids == null || !ids.Any()) return BadRequest("Nincs kijelölt elem.");
-        //    using var transaction = await _context.Database.BeginTransactionAsync();
-        //    try
-        //    {
-        //        await _context.Courses.Where(s => ids.Contains(s.Id)).ExecuteDeleteAsync();
-        //        await transaction.CommitAsync();
-        //        return Ok();
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return StatusCode(500, "Hiba történt: " + e.Message);
-        //    }
+        [HttpPost("bulk-delete")]
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> BulkDeleteRooms(List<int> ids)
+        {
+            if (ids == null || !ids.Any()) return BadRequest("No selected items.");
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                await _context.Courses.Where(s => ids.Contains(s.Id)).ExecuteDeleteAsync();
+                await transaction.CommitAsync();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, "Error: " + e.Message);
+            }
 
-        //}
+        }
     }
 }

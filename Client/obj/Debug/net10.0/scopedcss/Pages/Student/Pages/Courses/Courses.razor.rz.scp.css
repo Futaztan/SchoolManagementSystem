@@ -6,7 +6,7 @@
 .timetable-table th:first-child[b-9enlvdac17] {
     width: 80px !important;
     background-color: gray !important;
-    text-align: left !important; /* Mivel a többi középre van zárva, ezt érdemes visszaállítani balra */
+    text-align: left !important; 
 }
 .timetable-table td:first-child[b-9enlvdac17]{
     font-weight: bold; background-color: grey;

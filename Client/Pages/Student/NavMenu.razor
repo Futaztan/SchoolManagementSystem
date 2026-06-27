@@ -1,67 +1,48 @@
 ﻿@using Client.Token
 @using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.EntityFrameworkCore.Metadata.Internal
 @using MudBlazor
 @inject HttpClient Http
 @inject ILocalStorageService LocalStorage
 @inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavManager
 
+<MudNavMenu Bordered="true">
+    <MudText Typo="Typo.h6" Class="px-4 py-3" Color="Color.Primary">Student Panel</MudText>
+    
+    <MudNavLink Href="student/home" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
+        Home
+    </MudNavLink>
+    
+    <MudNavLink Href="student/grades" Icon="@Icons.Material.Filled.Grade">
+        Grades
+    </MudNavLink>
+    
+    <MudNavLink Href="student/courses" Icon="@Icons.Material.Filled.Class">
+        Courses
+    </MudNavLink>
+    
+    <MudNavLink Href="student/profile" Icon="@Icons.Material.Filled.Person">
+        Profile
+    </MudNavLink>
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Client</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <MudDivider Class="my-2" />
+
+    <div class="px-4 py-2">
+        <MudButton Variant="Variant.Filled" 
+                   Color="Color.Error" 
+                   FullWidth="true"
+                   StartIcon="@Icons.Material.Filled.Logout"
+                   OnClick="@Logout">
+            Sign out
+        </MudButton>
     </div>
-</div>
-<h1> STUDENT</h1>
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="student/home" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="student/grades">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Grades
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="student/courses">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Courses
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="student/profile">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Profile
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="Logout">
-                Sign out
-            </MudButton>
-        </div>
-    </nav>
-</div>
+</MudNavMenu>
 
 @code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-    
     private async Task Logout()
     {
         await LocalStorage.RemoveItemAsync("authToken");
         ((CustomAuthStateProvider)AuthStateProvider).NotifyUserLogout();
         NavManager.NavigateTo("/");
-        StateHasChanged();
-    }
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
     }
 }

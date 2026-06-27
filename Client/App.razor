@@ -5,10 +5,10 @@
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <NotAuthorized>
-                    <p>Sajnálom, nincs jogosultságod az oldal megtekintéséhez.</p>
+                    <p>Sorry, you do not have permission to view this page.</p>
                 </NotAuthorized>
                 <Authorizing>
-                    <p>Hitelesítés folyamatban...</p>
+                    <p>Authenticating...</p>
                 </Authorizing>
             </AuthorizeRouteView>
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
@@ -16,7 +16,7 @@
         <NotFound>
             <PageTitle>Not found</PageTitle>
             <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sajnos ezen a címen nem található semmi.</p>
+                <p role="alert">Sorry, there's nothing at this address.</p>
             </LayoutView>
         </NotFound>
     </Router>

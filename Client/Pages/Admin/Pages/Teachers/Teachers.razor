@@ -1,0 +1,70 @@
+﻿@inject HttpClient Http
+@attribute [Authorize(Roles = "Admin")]
+@page "/admin/teachers"
+
+@using Client.Pages.Admin.Pages.Teachers.Components
+@using Client.Pages.Components
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+@inject ISnackbar Snackbar
+@using Shared.DTOs
+
+<h3>Add new Teacher</h3>
+
+
+
+
+@if (subjects is null)
+{
+	<LoadingCircle/>
+}
+else
+{
+	<NewTeacherForm OnSubmit="@HandleAdd" Subjects="subjects" SelectedSubjects="selectedSubjects"
+	                TeacherModel="teacherModel"/>
+}
+
+
+@if (teachers == null)
+{
+	<LoadingCircle/>
+}
+else
+{
+	<TeachersTable Teachers="teachers"/>
+}
+
+@code {
+
+	private List<SubjectDto>? subjects = new List<SubjectDto>();
+	private HashSet<SubjectDto> selectedSubjects = new HashSet<SubjectDto>();
+	private TeacherDetailsDto teacherModel = new();
+	private List<TeacherDetailsDto>? teachers = null;
+
+	private async Task HandleAdd()
+	{
+		teacherModel.TeachedSubjects = selectedSubjects;
+		var response = await Http.PostAsJsonAsync("api/auth/register-teacher", teacherModel);
+		if (response.IsSuccessStatusCode)
+		{
+			TeacherDetailsDto newTeacher = await response.Content.ReadFromJsonAsync<TeacherDetailsDto>();
+			
+			//TODO
+			if (newTeacher != null)
+			{
+				teachers.Add(newTeacher);
+				Snackbar.Add($"Successful", Severity.Success);
+			}
+		}
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		var response = await Http.GetFromJsonAsync<List<SubjectDto>>("api/subjects");
+		if (response != null) subjects = response;
+
+		var response2 = await Http.GetFromJsonAsync<List<TeacherDetailsDto>>("api/teachers");
+		if (response2 != null) teachers = response2;
+	}
+
+}

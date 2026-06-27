@@ -43,62 +43,15 @@ namespace Server.Controllers
             return list;
         }
 
-        // [Authorize(Roles = "Student")]
-        // [HttpPost("change-password")]
-        // public async Task<IActionResult> ChangePassword(PasswordChangeModel pass)
-        // {
-        //     
-        //     string userid = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-        //     var user = await _userManager.FindByIdAsync(userid);
-        //     var result = await _userManager.ChangePasswordAsync(user!, pass.CurrentPassword, pass.NewPassword);
-        //     if (result.Succeeded) return Ok();
-        //     var errors = result.Errors.Select(e => e.Description);
-        //     return BadRequest(new { Errors = errors });
-        //     
-        // }
+    
 
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<StudentDetailsDto>> AddStudent(StudentDetailsDto dto)
-        {
-            try
-            {
-                var user = new IdentityUser { UserName = dto.Name, Email = dto.Email };
-                var result = await _userManager.CreateAsync(user, dto.Password);
-                if (!result.Succeeded) return StatusCode(500, result);
-                await _userManager.AddToRoleAsync(user, "Student");
-                //var schoolclass = await _context.SchoolClasses.SingleOrDefaultAsync(c => c.Id == dto.SchoolClassId);
-
-                Student student = new Student
-                {
-                    BirthDate = (DateOnly)dto.BirthDate, Name = dto.Name, SchoolClassId = dto.SchoolClassId,
-                    Email = dto.Email, UserId = user.Id
-                };
-                _context.Students.Add(student);
-                await _context.SaveChangesAsync();
-
-                StudentDto returndto = await _context.Students.ProjectToType<StudentDto>()
-                    .SingleOrDefaultAsync(s => s.Id == student.Id);
-
-                //StudentDto returndto = new StudentDto { Id = s.Id, BirthDate = s.BirthDate, Email = s.Email, Grades = s.Grades, Name = s.Name, SchoolClassId = s.SchoolClassId, SchoolClass = s.Class };
-                return Ok(returndto);
-            }
-
-            catch (Exception ex)
-            {
-                Console.WriteLine($"HIBA: {ex.Message}");
-                if (ex.InnerException != null) Console.WriteLine($"INNER: {ex.InnerException.Message}");
-
-                return StatusCode(500, $"Szerver hiba: {ex.Message}");
-            }
-        }
 
 
         [HttpPost("bulk-delete")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> BulkDeleteStudents(List<int> ids)
         {
-            if (ids == null || !ids.Any()) return BadRequest("Nincs kijelölt elem.");
+            if (ids == null || !ids.Any()) return BadRequest("No selected items.");
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
@@ -119,7 +72,7 @@ namespace Server.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Hiba történt: " + e.Message);
+                return StatusCode(500, "Error: " + e.Message);
             }
         }
     }

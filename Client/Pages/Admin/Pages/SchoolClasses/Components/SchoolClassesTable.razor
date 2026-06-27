@@ -1,0 +1,91 @@
+﻿@using MudBlazor
+@using Shared.DTOs
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+<MudTable Items="@Classes" MultiSelection="true" Dense="true" SortLabel="Sort by"
+          Filter="new Func<SchoolClassDto, bool>(FilterFunc)" @bind-SelectedItems="selectedClasses" Hover="true"
+          Breakpoint="Breakpoint.Sm">
+
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Classes</MudText>
+        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudSpacer/>
+
+
+        @if (selectedClasses.Any())
+        {
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Error"
+                       StartIcon="@Icons.Material.Filled.Delete"
+                       OnClick="OnDeleteSelected"
+                       Class="ml-4">
+                Delete (@selectedClasses.Count)
+            </MudButton>
+        }
+    </ToolBarContent>
+
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<SchoolClassDto, object>(x => x.Id)"> ID</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<SchoolClassDto, object>(x => x.Name)"> Name</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<SchoolClassDto, object>(x => x.Year)"> Year</MudTableSortLabel>
+        </MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Year">@context.Year</MudTd>
+    </RowTemplate>
+
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100, int.MaxValue }"
+                       RowsPerPageString="Rows per page:"
+                       InfoFormat="{first_item}-{last_item} of {all_items}"
+                       AllItemsText="All"
+                       HorizontalAlignment="HorizontalAlignment.Right"/>
+    </PagerContent>
+
+</MudTable>
+
+@code {
+    [Parameter] public required List<SchoolClassDto> Classes { get; set; }
+    private HashSet<SchoolClassDto> selectedClasses = new HashSet<SchoolClassDto>();
+    private string searchString = "";
+
+    private async Task OnDeleteSelected()
+    {
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        var idsToDelete = selectedClasses.Select(s => s.Id).ToList();
+        if (!idsToDelete.Any()) return;
+        var response = await Http.PostAsJsonAsync("api/classes/bulk-delete", idsToDelete);
+
+        if (response.IsSuccessStatusCode)
+        {
+            Classes.RemoveAll(s => idsToDelete.Contains(s.Id));
+            selectedClasses.Clear();
+            Snackbar.Add($"{idsToDelete.Count} class(es) deleted.", Severity.Success);
+            StateHasChanged();
+        }
+        else Snackbar.Add($"Error", Severity.Error);
+    }
+
+    private bool FilterFunc(SchoolClassDto schoolClass)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (schoolClass.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (schoolClass.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (schoolClass.Year.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+
+}

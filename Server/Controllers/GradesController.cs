@@ -63,18 +63,18 @@ namespace Server.Controllers
             else if (sId != null)
             {
                 student = await _context.Students.Include(s => s.Grades).SingleOrDefaultAsync(s => s.Id == sId);
-                if (student == null) return NotFound("A diák nem található az adatbázisban.");
+                if (student == null) return NotFound("Student not found in the database.");
                 students = new List<Student> { student };
             }
             else if (cId != null)
             {
                 students = await _context.Students.Include(s => s.Grades).Where(c => c.SchoolClassId == cId)
                     .ToListAsync();
-                if (students.Count == 0) return BadRequest("Az osztály nem található az adatbázisban.");
+                if (students.Count == 0) return BadRequest("Class not found in the database.");
             }
             else
             {
-                return BadRequest("Hibás paraméterek");
+                return BadRequest("Invalid parameters.");
             }
 
             // var gradesDto = await _context.Grades.ProjectToType<GradeDto>()
@@ -121,25 +121,7 @@ namespace Server.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
-        //TODO
 
-        //[HttpPost("bulk-delete")]
-        //[Authorize(Roles = "Admin")]
-        //public async Task<IActionResult> BulkDeleteRooms(List<int> ids)
-        //{
-        //    if (ids == null || !ids.Any()) return BadRequest("Nincs kijelölt elem.");
-        //    using var transaction = await _context.Database.BeginTransactionAsync();
-        //    try
-        //    {
-        //        await _context.Courses.Where(s => ids.Contains(s.Id)).ExecuteDeleteAsync();
-        //        await transaction.CommitAsync();
-        //        return Ok();
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return StatusCode(500, "Hiba történt: " + e.Message);
-        //    }
-
-        //}
+    
     }
 }

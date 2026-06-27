@@ -1,0 +1,57 @@
+﻿@using Client.Pages.Admin.Pages.Subjects.Components
+@using Client.Pages.Components
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+@using Shared.DTOs
+@using Shared.Entities
+@inject HttpClient Http
+@attribute [Authorize(Roles = "Admin")]
+@page "/admin/subjects"
+@inject ISnackbar Snackbar
+<h3>Add new Subject</h3>
+
+<NewSubjectForm OnSubmit="@HandleAdd" SubjectModel="subjectModel"/>
+
+
+<h3>Subjects</h3>
+@if (subjects is null)
+{
+	<LoadingCircle/>
+}
+else
+{
+	<SubjectsTable Subjects="subjects"/>
+}
+
+
+
+
+@code {
+	private SubjectDto subjectModel = new SubjectDto();
+
+	private async Task HandleAdd()
+	{
+		{
+			var response = await Http.PostAsJsonAsync("api/subjects", subjectModel);
+			if (response.IsSuccessStatusCode)
+			{
+				SubjectDto newSubject = await response.Content.ReadFromJsonAsync<SubjectDto>();
+				if (newSubject != null)
+				{
+					subjects!.Add(newSubject);
+					Snackbar.Add($"Success", Severity.Success);
+				}
+			}
+		}
+	}
+
+
+	private List<SubjectDto>? subjects = null;
+
+	protected override async Task OnInitializedAsync()
+	{
+		var response = await Http.GetFromJsonAsync<List<SubjectDto>>("api/subjects");
+		if (response != null) subjects = response;
+	}
+
+}
